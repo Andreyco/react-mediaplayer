@@ -5,18 +5,6 @@ import PlayButton from './PlayButton';
 import TimeIndicator from './TimeIndicator';
 import Video from './Video';
 
-function secondsToTimeString(seconds) {
-  const totalSeconds = parseInt(seconds, 10);
-  
-  let timeStr = (new Date(totalSeconds * 1000)).toUTCString().match(/(\d\d:\d\d:\d\d)/)[0].split(':');
-
-  if (timeStr[0] === '00') {
-    timeStr.shift();
-  }
-  
-  return timeStr.join(':');
-}
-
 let Player = React.createClass({
   
   propTypes: {
@@ -60,16 +48,10 @@ let Player = React.createClass({
     this.setState({currentTime: event.target.currentTime});
   },
   
-  getCurrentTime() {
-    return secondsToTimeString(this.state.currentTime);
-  },
-  
   setDuration(event) {
     this.setState({duration: event.target.duration});
   },
   
-  getDuration() {
-    return secondsToTimeString(this.state.duration);
   },
 
   render() {
