@@ -70,6 +70,7 @@ let Player = React.createClass({
   },
 
   _onSeekStart() {
+    this.state.playAfterSeek = ! this.state.paused;
     this.state.seekInProgress = true;
     this._pauseVideo();
   },
@@ -80,8 +81,11 @@ let Player = React.createClass({
   },
 
   _onSeekEnd() {
+    if (this.state.playAfterSeek) {
+      this._playVideo();
+    }
+    this.state.playAfterSeek = false;
     this.state.seekInProgress = false;
-    this._playVideo();
   },
 
   render() {
@@ -97,7 +101,7 @@ let Player = React.createClass({
           {...restProps}
       />
       <div className="videoplayer-controls">
-        <PlayButton onClick={this._togglePlayback} paused={this.state.paused} />
+        <PlayButton onClick={this._togglePlayback} paused={!this.state.playAfterSeek && this.state.paused} />
         <TimeIndicator currentTime={this.state.currentTime} duration={this.state.duration} />
       </div>
       <ProgressBar
