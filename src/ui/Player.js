@@ -61,8 +61,8 @@ let Player = React.createClass({
     });
   },
 
-  _onEnd(event) {
-    // this.setState({paused: true});
+  _onEnd() {
+    this.setState({paused: true});
   },
 
   _setDownloadedRanges(ranges) {

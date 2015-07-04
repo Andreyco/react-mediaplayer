@@ -20,6 +20,7 @@ module.exports = React.createClass({
     video.addEventListener('timeupdate', this._timeUpdate);
     video.addEventListener('progress', this._onProgress);
     video.addEventListener('loadedmetadata', this._loadedMetadata);
+    video.addEventListener('ended', this.props.onEnd);
   },
 
   componentWillUnmount() {
@@ -27,6 +28,7 @@ module.exports = React.createClass({
     video.removeEventListener('timeupdate', this._timeUpdate);
     video.removeEventListener('progress', this._onProgress);
     video.removeEventListener('loadedmetadata', this._loadedMetadata);
+    video.removeEventListener('ended', this.props.onEnd);
   },
 
   shouldComponentUpdate(nextProps) {
