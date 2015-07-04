@@ -1,19 +1,26 @@
 "use strict";
 
 import React from 'react';
-let { PropTypes } = React;
+const { PropTypes } = React;
+const PureRenderMixin = require('react/addons').addons.PureRenderMixin;
 
 module.exports = React.createClass({
 
   displayName: 'Video',
 
   propTypes: {
-    src: PropTypes.string.isRequired,
+    src: React.PropTypes.oneOfType([
+      React.PropTypes.string,
+      React.PropTypes.array,
+      React.PropTypes.object,
+    ]),
     width: PropTypes.number.isRequired,
     height: PropTypes.number.isRequired,
     currentTimeChanged: PropTypes.func,
     durationChanged: PropTypes.func,
   },
+
+  mixins: [PureRenderMixin],
 
   componentDidMount() {
     let video = React.findDOMNode(this);
@@ -29,12 +36,6 @@ module.exports = React.createClass({
     video.removeEventListener('progress', this._onProgress);
     video.removeEventListener('loadedmetadata', this._loadedMetadata);
     video.removeEventListener('ended', this.props.onEnd);
-  },
-
-  shouldComponentUpdate(nextProps) {
-    return this.props.width !== nextProps.width ||
-      this.props.height !== nextProps.height ||
-      this.props.src !== nextProps.src;
   },
 
   _loadedMetadata(event) {
@@ -54,6 +55,22 @@ module.exports = React.createClass({
     this.props.onDownloadProgress(event.target.buffered);
   },
 
+  renderSources(src, key) {
+    if (Array.isArray(src)) {
+      return src.map((src, idx) => this.renderSources(src, idx));
+    }
+
+    if (typeof src === 'string') {
+      return <source src={src} />;
+    }
+
+    if(typeof src === 'object') {
+      let props = {src: src.url, type: src.type};
+      if (typeof key !== 'undefined') { props.key = key; }
+      return <source {...props} />;
+    }
+  },
+
   render() {
     const videoProps = {
       autoPlay: this.props.autoPlay,
@@ -62,7 +79,7 @@ module.exports = React.createClass({
     };
 
     return (<video {...videoProps}>
-      <source src={this.props.src} />
+      { this.renderSources(this.props.src) }
     </video>);
   },
 });

@@ -11,7 +11,7 @@ import Helpers from '../helpers.js';
 let Player = React.createClass({
 
   propTypes: {
-    src: React.PropTypes.string.isRequired,
+    src: React.PropTypes.any.isRequired,
     width: React.PropTypes.number.isRequired,
     height: React.PropTypes.number.isRequired,
     autoPlay: React.PropTypes.bool,
