@@ -21,80 +21,92 @@ let Player = React.createClass({
       currentTime: 0,
       duration: 0,
       paused: ! this.props.autoPlay,
+      ranges: null,
     };
   },
 
-  video() {
+  _video() {
     return React.findDOMNode(this.refs.video);
   },
 
-  togglePlayback() {
+  _togglePlayback() {
     if (this.state.paused) {
-      this.playVideo();
+      this._playVideo();
     } else {
-      this.pauseVideo();
+      this._pauseVideo();
     }
   },
 
-  playVideo() {
+  _playVideo() {
     if (! this.state.paused) { return; }
     this.setState({paused: false});
-    this.video().play();
+    this._video().play();
   },
 
-  pauseVideo() {
+  _pauseVideo() {
     if (this.state.paused) { return; }
     this.setState({paused: true});
-    this.video().pause();
+    this._video().pause();
   },
 
-  setCurrentTime(event) {
-    this.setState({currentTime: event.target.currentTime});
+  _setCurrentTimeFromVideo(time) {
+    if (this.state.seekInProgress) { return; }
+    this.setState({currentTime: time});
   },
 
-  setDuration(event) {
-    this.setState({duration: event.target.duration});
+  _setMetadata(metadata) {
+    this.setState({
+      currentTime: metadata.currentTime,
+      duration: metadata.duration,
+    });
   },
 
-  onEnd(event) {
+  _onEnd(event) {
     // this.setState({paused: true});
   },
 
-  setBuffered(event) {
-    // console.log(event.target.buffered.start(0), event.target.buffered.end(0));
+  _setDownloadedRanges(ranges) {
+    this.setState({ranges: ranges});
   },
 
-  onSeekProgress(time) {
-    this.pauseVideo();
-    this.video().currentTime = time;
+  _onSeekStart() {
+    this.state.seekInProgress = true;
+    this._pauseVideo();
   },
 
-  onSeekEnd() {
-    this.video().play();
+  _onSeekProgress(time) {
+    this.setState({currentTime: time});
+    this._video().currentTime = time;
+  },
+
+  _onSeekEnd() {
+    this.state.seekInProgress = false;
+    this._playVideo();
   },
 
   render() {
     let { width, height, src, ...restProps } = this.props;
-
     return (<div className="videoplayer" style={{...{}, width, height}}>
       <Video
           ref="video"
           src={src} width={width} height={height}
-          currentTimeChanged={this.setCurrentTime}
-          durationChanged={this.setDuration}
-          onProgress={this.setBuffered}
-          onEnd={this.onEnd}
+          metadataLoaded={this._setMetadata}
+          onDownloadProgress={this._setDownloadedRanges}
+          currentTimeChanged={this._setCurrentTimeFromVideo}
+          onEnd={this._onEnd}
           {...restProps}
       />
       <div className="videoplayer-controls">
-        <PlayButton onClick={this.togglePlayback} paused={this.state.paused} />
+        <PlayButton onClick={this._togglePlayback} paused={this.state.paused} />
         <TimeIndicator currentTime={this.state.currentTime} duration={this.state.duration} />
       </div>
       <ProgressBar
           duration={this.state.duration}
           currentTime={this.state.currentTime}
-          onSeekProgress={this.onSeekProgress}
-          onSeekEnd={this.onSeekEnd}
+          onSeekStart={this._onSeekStart}
+          onSeekProgress={this._onSeekProgress}
+          onSeekEnd={this._onSeekEnd}
+          ranges={this.state.ranges}
       />
     </div>);
   }

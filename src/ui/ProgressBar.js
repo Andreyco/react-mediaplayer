@@ -37,45 +37,70 @@ var ProgressBar = React.createClass({
     this.setState(state);
   },
 
-  onChange(event) {
+  shouldComponentUpdate(nextProps) {
+    // Update component only once in a second
+    return Math.ceil(this.props.currentTime) !== Math.ceil(nextProps.currentTime);
+  },
+
+  _onChange(event) {
     let currentTime = parseInt(event.target.value, 10);
     this.setState({currentTime: currentTime});
     this.props.onSeekProgress(currentTime);
   },
 
-  onMouseDown() {
+  _onMouseDown() {
     this.props.onSeekStart();
   },
 
-  onMouseUp() {
+  _onMouseUp() {
     this.props.onSeekEnd(this.state.currentTime);
   },
 
-  renderBufferedData() {
-    return '';
+  _renderDownloadedRangesIfAny() {
+    if (! this.props.ranges) {
+      return null;
+    }
+
+    const renderedRanges = [];
+    let idx = 0;
+
+    for(idx; idx < this.props.ranges.length; idx++) {
+      const start = this.props.ranges.start(idx);
+      const end = this.props.ranges.end(idx);
+      const percentage = Math.ceil(Math.ceil(end) / Math.ceil(this.props.duration) * 100);
+      const left = Math.ceil(Math.ceil(start) / Math.ceil(this.props.duration) * 100);
+      const width = percentage - left;
+      renderedRanges.push(<div key={idx} style={{width:`${width}%`, left:`${left}%`, position:'absolute', height:10, background:'blue'}}></div>);
+    }
+
+    return (<div className="videoplayer--downloaded-ranges" style={{border:'1px solid red', height: 10}}>
+      { renderedRanges }
+    </div>);
+
+    return html;
   },
 
-  renderSlider() {
+  _renderSlider() {
     let { duration, ...restProps } = this.props;
     let { currentTime } = this.state;
-    let { onChange, onMouseDown, onMouseUp } = this;
+    let { _onChange, _onMouseDown, _onMouseUp } = this;
 
     return (<input
         type="range"
         step={0.01}
         value={currentTime}
         max={duration}
-        onChange={onChange}
-        onMouseDown={onMouseDown}
-        onMouseUp={onMouseUp}
+        onChange={_onChange}
+        onMouseDown={_onMouseDown}
+        onMouseUp={_onMouseUp}
         {...restProps}
     />);
   },
 
   render() {
     return (<div className="videoplayer--progress-bar">
-      { this.renderBufferedData() }
-      { this.renderSlider() }
+      { this._renderDownloadedRangesIfAny() }
+      { this._renderSlider() }
     </div>);
   }
 });

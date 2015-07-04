@@ -16,19 +16,17 @@ module.exports = React.createClass({
   },
 
   componentDidMount() {
-    let video = React.findDOMNode(this.refs.video);
-    video.addEventListener('timeupdate', this.props.currentTimeChanged);
-    video.addEventListener('durationchange', this.props.durationChanged);
-    video.addEventListener('progress', this.props.onProgress);
-    video.addEventListener('ended', this.props.onEnd);
+    let video = React.findDOMNode(this);
+    video.addEventListener('timeupdate', this._timeUpdate);
+    video.addEventListener('progress', this._onProgress);
+    video.addEventListener('loadedmetadata', this._loadedMetadata);
   },
 
   componentWillUnmount() {
-    let video = React.findDOMNode(this.refs.video);
-    video.removeEventListener('timeupdate', this.props.currentTimeChanged);
-    video.removeEventListener('durationchange', this.props.durationChanged);
-    video.removeEventListener('progress', this.props.onProgress);
-    video.removeEventListener('ended', this.props.onEnd);
+    let video = React.findDOMNode(this);
+    video.removeEventListener('timeupdate', this._timeUpdate);
+    video.removeEventListener('progress', this._onProgress);
+    video.removeEventListener('loadedmetadata', this._loadedMetadata);
   },
 
   shouldComponentUpdate(nextProps) {
@@ -42,6 +40,21 @@ module.exports = React.createClass({
     return false;
   },
 
+  _loadedMetadata(event) {
+    this.props.metadataLoaded({
+      currentTime: event.target.currentTime,
+      duration: event.target.duration,
+    });
+  },
+
+  _timeUpdate(event) {
+    this.props.currentTimeChanged(event.target.currentTime);
+  },
+
+  _onProgress(event) {
+    this.props.onDownloadProgress(event.target.buffered);
+  },
+
   render() {
     const videoProps = {
       autoPlay: this.props.autoPlay,
@@ -49,7 +62,7 @@ module.exports = React.createClass({
       height: this.props.height,
     };
 
-    return (<video ref="video" {...videoProps}>
+    return (<video {...videoProps}>
       <source src={this.props.src} />
     </video>);
 
