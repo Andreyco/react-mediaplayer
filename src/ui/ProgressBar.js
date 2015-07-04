@@ -1,7 +1,7 @@
 "use strict";
 
 import React from 'react';
-let { PropTypes } = React;
+const { PropTypes } = React;
 import Helpers from '../helpers.js';
 
 var ProgressBar = React.createClass({

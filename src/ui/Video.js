@@ -41,6 +41,8 @@ module.exports = React.createClass({
     this.props.metadataLoaded({
       currentTime: event.target.currentTime,
       duration: event.target.duration,
+      muted: event.target.muted,
+      volume: event.target.volume,
     });
   },
 
@@ -62,6 +64,5 @@ module.exports = React.createClass({
     return (<video {...videoProps}>
       <source src={this.props.src} />
     </video>);
-
   },
 });

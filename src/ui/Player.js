@@ -5,6 +5,7 @@ import PlayButton from './PlayButton';
 import ProgressBar from './ProgressBar';
 import TimeIndicator from './TimeIndicator';
 import Video from './Video';
+import Controls from './Controls';
 import Helpers from '../helpers.js';
 
 let Player = React.createClass({
@@ -21,6 +22,8 @@ let Player = React.createClass({
       currentTime: 0,
       duration: 0,
       paused: ! this.props.autoPlay,
+      muted: false,
+      volume: 0,
       ranges: null,
     };
   },
@@ -58,7 +61,14 @@ let Player = React.createClass({
     this.setState({
       currentTime: metadata.currentTime,
       duration: metadata.duration,
+      muted: metadata.muted,
+      volume: metadata.volume,
     });
+  },
+
+  _setVolume(level) {
+    this.setState({volume: level});
+    this._video().volume = level;
   },
 
   _onEnd() {
@@ -88,8 +98,16 @@ let Player = React.createClass({
     this.state.seekInProgress = false;
   },
 
+  renderControls() {
+    return (<Controls {...{
+      onVolumeChange: this._setVolume,
+      ...this.state
+    }} />);
+  },
+
   render() {
-    let { width, height, src, ...restProps } = this.props;
+
+    const { width, height, src, ...restProps } = this.props;
     return (<div className="videoplayer" style={{...{}, width, height}}>
       <Video
           ref="video"
@@ -112,6 +130,7 @@ let Player = React.createClass({
           onSeekEnd={this._onSeekEnd}
           ranges={this.state.ranges}
       />
+      { this.renderControls() }
     </div>);
   }
 });
