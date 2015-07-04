@@ -3,7 +3,9 @@
 import React from 'react';
 let { PropTypes } = React;
 
-let Video = React.createClass({
+module.exports = React.createClass({
+
+  displayName: 'Video',
 
   propTypes: {
     src: PropTypes.string.isRequired,
@@ -29,17 +31,27 @@ let Video = React.createClass({
     video.removeEventListener('ended', this.props.onEnd);
   },
 
-  render() {
-    let { src, width, height, currentTimeChanged, durationChanged, ...restProps} = this.props;
+  shouldComponentUpdate(nextProps) {
+    if (
+      this.props.width !== nextProps.width ||
+      this.props.height !== nextProps.height ||
+      this.props.src !== nextProps.src
+    ) {
+      return true;
+    }
+    return false;
+  },
 
-    return (<video ref="video" {...restProps}
-      width={width} height={height}
-      timeupdate={currentTimeChanged}
-      durationchange={durationChanged}
-    >
-      <source src={src} />
+  render() {
+    const videoProps = {
+      autoPlay: this.props.autoPlay,
+      width: this.props.width,
+      height: this.props.height,
+    };
+
+    return (<video ref="video" {...videoProps}>
+      <source src={this.props.src} />
     </video>);
+
   },
 });
-
-module.exports = Video;
