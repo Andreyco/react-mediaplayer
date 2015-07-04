@@ -32,14 +32,9 @@ module.exports = React.createClass({
   },
 
   shouldComponentUpdate(nextProps) {
-    if (
-      this.props.width !== nextProps.width ||
+    return this.props.width !== nextProps.width ||
       this.props.height !== nextProps.height ||
-      this.props.src !== nextProps.src
-    ) {
-      return true;
-    }
-    return false;
+      this.props.src !== nextProps.src;
   },
 
   _loadedMetadata(event) {
