@@ -4,6 +4,7 @@ import React from 'react';
 const { PropTypes } = React;
 import Helpers from '../helpers.js';
 import PlayButton from './controls/PlayButton.js';
+import TimeIndicator from './controls/TimeIndicator.js';
 
 
 module.exports = React.createClass({
@@ -48,6 +49,7 @@ module.exports = React.createClass({
 
   render() {
     return (<div>
+      <TimeIndicator currentTime={this.props.currentTime} duration={this.props.duration} />
       <PlayButton paused={!this.props.playAfterSeek && this.props.paused} onClick={this.props.requestPlaybackToggle} />
       { this.renderVolumeControls() }
     </div>)

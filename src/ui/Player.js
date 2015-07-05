@@ -1,9 +1,7 @@
 "use strict";
 
 import React from 'react';
-import PlayButton from './PlayButton';
 import ProgressBar from './ProgressBar';
-import TimeIndicator from './TimeIndicator';
 import Video from './Video';
 import Controls from './Controls';
 import Helpers from '../helpers.js';
@@ -130,7 +128,7 @@ let Player = React.createClass({
           {...restProps}
       />
       <div className="videoplayer-controls">
-        <TimeIndicator currentTime={this.state.currentTime} duration={this.state.duration} />
+
       </div>
       <ProgressBar
           duration={this.state.duration}
