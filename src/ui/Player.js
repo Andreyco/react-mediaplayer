@@ -109,6 +109,7 @@ let Player = React.createClass({
 
   renderControls() {
     return (<Controls {...{
+      requestPlaybackToggle: this._togglePlayback,
       requestVolumeChange: this._setVolume,
       requestMute: this._toggleMute,
       ...this.state
@@ -129,7 +130,6 @@ let Player = React.createClass({
           {...restProps}
       />
       <div className="videoplayer-controls">
-        <PlayButton onClick={this._togglePlayback} paused={!this.state.playAfterSeek && this.state.paused} />
         <TimeIndicator currentTime={this.state.currentTime} duration={this.state.duration} />
       </div>
       <ProgressBar

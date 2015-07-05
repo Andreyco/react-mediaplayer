@@ -3,6 +3,8 @@
 import React from 'react';
 const { PropTypes } = React;
 import Helpers from '../helpers.js';
+import PlayButton from './controls/PlayButton.js';
+
 
 module.exports = React.createClass({
 
@@ -46,6 +48,7 @@ module.exports = React.createClass({
 
   render() {
     return (<div>
+      <PlayButton paused={!this.props.playAfterSeek && this.props.paused} onClick={this.props.requestPlaybackToggle} />
       { this.renderVolumeControls() }
     </div>)
   },
