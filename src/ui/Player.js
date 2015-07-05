@@ -67,8 +67,17 @@ let Player = React.createClass({
   },
 
   _setVolume(level) {
-    this.setState({volume: level});
+    this.setState({
+      volume: level,
+      muted: false,
+    });
     this._video().volume = level;
+    this._video().muted = false;
+  },
+
+  _toggleMute() {
+    this._video().muted = !this.state.muted;
+    this.setState({muted: !this.state.muted});
   },
 
   _onEnd() {
@@ -100,7 +109,8 @@ let Player = React.createClass({
 
   renderControls() {
     return (<Controls {...{
-      onVolumeChange: this._setVolume,
+      requestVolumeChange: this._setVolume,
+      requestMute: this._toggleMute,
       ...this.state
     }} />);
   },

@@ -11,22 +11,25 @@ module.exports = React.createClass({
     duration: PropTypes.number.isRequired,
     muted: PropTypes.bool.isRequired,
     volume: PropTypes.number.isRequired,
-    onVolumeChange: PropTypes.func.isRequired
+    requestVolumeChange: PropTypes.func.isRequired,
+    requestMute: PropTypes.func.isRequired
   },
 
   getDefaultProps() {
     return {
-      onVolumeChange: Helpers.noop,
+      requestVolumeChange: Helpers.noop,
+      requestMute: Helpers.noop,
     };
   },
 
-  _onVolumeChange(event) {
-    this.props.onVolumeChange(parseFloat(event.target.value));
+  _requestVolumeChange(event) {
+    this.props.requestVolumeChange(parseFloat(event.target.value));
   },
 
   render() {
     return (<div>
-      <input type="range" max="1" min="0" step={0.01} value={this.props.volume} onChange={this._onVolumeChange} />
+      <div onClick={this.props.requestMute}>{this.props.muted?'Muted':'Mute'}</div>
+      <input type="range" max="1" min="0" step={0.01} value={this.props.volume} onChange={this._requestVolumeChange} />
     </div>)
   },
 });
