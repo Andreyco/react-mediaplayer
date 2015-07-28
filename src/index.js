@@ -2,8 +2,12 @@ import React from 'react';
 import Player from './ui/Player';
 
 const src = [
+  // {
+  //   url: 'http://video.andrejbadin.com/video.mp4',
+  //   type: 'video/mp4',
+  // }
   {
-    url: 'http://video.andrejbadin.com/video.mp4',
+    url: '/src/video.mp4',
     type: 'video/mp4',
   }
 ];

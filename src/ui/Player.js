@@ -1,7 +1,6 @@
 "use strict";
 
 import React from 'react';
-import ProgressBar from './ProgressBar';
 import Video from './Video';
 import Controls from './Controls';
 import Helpers from '../helpers.js';
@@ -110,6 +109,9 @@ let Player = React.createClass({
       requestPlaybackToggle: this._togglePlayback,
       requestVolumeChange: this._setVolume,
       requestMute: this._toggleMute,
+      requestSeekStart: this._onSeekStart,
+      requestSeekProgress: this._onSeekProgress,
+      requestSeekEnd: this._onSeekEnd,
       ...this.state
     }} />);
   },
@@ -130,14 +132,6 @@ let Player = React.createClass({
       <div className="videoplayer-controls">
 
       </div>
-      <ProgressBar
-          duration={this.state.duration}
-          currentTime={this.state.currentTime}
-          onSeekStart={this._onSeekStart}
-          onSeekProgress={this._onSeekProgress}
-          onSeekEnd={this._onSeekEnd}
-          ranges={this.state.ranges}
-      />
       { this.renderControls() }
     </div>);
   }

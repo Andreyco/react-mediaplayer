@@ -2,16 +2,16 @@
 
 import React from 'react';
 const { PropTypes } = React;
-import Helpers from '../helpers.js';
+import Helpers from '../../helpers.js';
 
 var ProgressBar = React.createClass({
 
   propTypes: {
     currentTime: PropTypes.number.isRequired,
     duration: PropTypes.number.isRequired,
-    onSeekStart: PropTypes.func.isRequired,
-    onSeekProgress: PropTypes.func.isRequired,
-    onSeekEnd: PropTypes.func.isRequired,
+    requestSeekStart: PropTypes.func.isRequired,
+    requestSeekProgress: PropTypes.func.isRequired,
+    requestSeekEnd: PropTypes.func.isRequired,
   },
 
   getInitialState(props) {
@@ -26,9 +26,9 @@ var ProgressBar = React.createClass({
 
   getDefaultProps() {
     return {
-      onSeekStart: Helpers.noop,
-      onSeekProgress: Helpers.noop,
-      onSeekEnd: Helpers.noop,
+      requestSeekStart: Helpers.noop,
+      requestSeekProgress: Helpers.noop,
+      requestSeekEnd: Helpers.noop,
     };
   },
 
@@ -37,23 +37,23 @@ var ProgressBar = React.createClass({
     this.setState(state);
   },
 
-  shouldComponentUpdate(nextProps) {
-    // Update component only once in a second
-    return Math.ceil(this.props.currentTime) !== Math.ceil(nextProps.currentTime);
-  },
+  // shouldComponentUpdate(nextProps) {
+  //   // Update component only once in a second
+  //   return Math.ceil(this.props.currentTime) !== Math.ceil(nextProps.currentTime);
+  // },
 
   _onChange(event) {
-    let currentTime = parseInt(event.target.value, 10);
+    let currentTime = parseFloat(event.target.value, 10);
     this.setState({currentTime: currentTime});
-    this.props.onSeekProgress(currentTime);
+    this.props.requestSeekProgress(currentTime);
   },
 
   _onMouseDown() {
-    this.props.onSeekStart();
+    this.props.requestSeekStart();
   },
 
   _onMouseUp() {
-    this.props.onSeekEnd(this.state.currentTime);
+    this.props.requestSeekEnd(this.state.currentTime);
   },
 
   _renderDownloadedRangesIfAny() {

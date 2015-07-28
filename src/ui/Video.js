@@ -2,7 +2,7 @@
 
 import React from 'react';
 const { PropTypes } = React;
-const PureRenderMixin = require('react/addons').addons.PureRenderMixin;
+// const PureRenderMixin = require('react/addons').addons.PureRenderMixin;
 
 module.exports = React.createClass({
 
@@ -20,7 +20,7 @@ module.exports = React.createClass({
     durationChanged: PropTypes.func,
   },
 
-  mixins: [PureRenderMixin],
+  // mixins: [PureRenderMixin],
 
   componentDidMount() {
     let video = React.findDOMNode(this);

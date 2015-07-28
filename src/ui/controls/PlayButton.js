@@ -1,7 +1,7 @@
 "use strict";
 
 import React from 'react';
-const PureRenderMixin = require('react/addons').addons.PureRenderMixin;
+// const PureRenderMixin = require('react/addons').addons.PureRenderMixin;
 const { PropTypes } = React;
 
 let Video = React.createClass({
@@ -11,7 +11,7 @@ let Video = React.createClass({
     onClick: PropTypes.func.isRequired,
   },
 
-  mixins: [PureRenderMixin],
+  // mixins: [PureRenderMixin],
 
   render() {
     return (<button className="videoplayer--play-btn" onClick={this.props.onClick}>
