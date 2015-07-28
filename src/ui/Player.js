@@ -104,23 +104,37 @@ let Player = React.createClass({
     this.state.seekInProgress = false;
   },
 
+  _onFullscreenEnterRequest() {
+    console.log('fs enter');
+  },
+
+  _onFullscreenExitRequest() {
+    console.log('fs exit');
+  },
+
   renderControls() {
-    return (<Controls {...{
-      requestPlaybackToggle: this._togglePlayback,
-      requestVolumeChange: this._setVolume,
-      requestMute: this._toggleMute,
-      requestSeekStart: this._onSeekStart,
-      requestSeekProgress: this._onSeekProgress,
-      requestSeekEnd: this._onSeekEnd,
-      ...this.state
-    }} />);
+    return (
+      <Controls
+        video={this.refs.video}
+        requestPlaybackToggle={this._togglePlayback}
+        requestVolumeChange={this._setVolume}
+        requestMute={this._toggleMute}
+        requestSeekStart={this._onSeekStart}
+        requestSeekProgress={this._onSeekProgress}
+        requestSeekEnd={this._onSeekEnd}
+        requestFullscreenEnter={this._onFullscreenEnterRequest}
+        requestFullscreenExit={this._onFullscreenExitRequest}
+        {...this.state}
+      />
+    );
   },
 
   render() {
 
     const { width, height, src, ...restProps } = this.props;
-    return (<div className="videoplayer" style={{...{}, width, height}}>
-      <Video
+    return (
+      <div className="videoplayer" style={{...{}, width, height}}>
+        <Video
           ref="video"
           src={src} width={width} height={height}
           metadataLoaded={this._setMetadata}
@@ -128,12 +142,10 @@ let Player = React.createClass({
           currentTimeChanged={this._setCurrentTimeFromVideo}
           onEnd={this._onEnd}
           {...restProps}
-      />
-      <div className="videoplayer-controls">
-
+        />
+        { this.renderControls() }
       </div>
-      { this.renderControls() }
-    </div>);
+    );
   }
 });
 

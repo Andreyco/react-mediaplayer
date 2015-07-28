@@ -5,17 +5,21 @@ const { PropTypes } = React;
 import Helpers from '../helpers.js';
 import PlayButton from './controls/PlayButton.js';
 import TimeIndicator from './controls/TimeIndicator.js';
+import FullscreenButton from './controls/FullscreenButton.js';
 
 
 module.exports = React.createClass({
+  displayName: "Controls",
 
   propTypes: {
     currentTime: PropTypes.number.isRequired,
     duration: PropTypes.number.isRequired,
     muted: PropTypes.bool.isRequired,
     volume: PropTypes.number.isRequired,
+    requestFullscreenEnter: PropTypes.func.isRequired,
+    requestFullscreenExit: PropTypes.func.isRequired,
+    requestMute: PropTypes.func.isRequired,
     requestVolumeChange: PropTypes.func.isRequired,
-    requestMute: PropTypes.func.isRequired
   },
 
   getDefaultProps() {
@@ -48,10 +52,15 @@ module.exports = React.createClass({
   },
 
   render() {
-    return (<div>
-      <TimeIndicator currentTime={this.props.currentTime} duration={this.props.duration} />
-      <PlayButton paused={!this.props.playAfterSeek && this.props.paused} onClick={this.props.requestPlaybackToggle} />
-      { this.renderVolumeControls() }
-    </div>)
+    const { requestFullscreenEnter, requestFullscreenExit } = this.props;
+
+    return (
+      <div>
+        <TimeIndicator currentTime={this.props.currentTime} duration={this.props.duration} />
+        <PlayButton paused={!this.props.playAfterSeek && this.props.paused} onClick={this.props.requestPlaybackToggle} />
+        { this.renderVolumeControls() }
+        <FullscreenButton video={this.props.video} {...{requestFullscreenEnter, requestFullscreenExit}} />
+      </div>
+    );
   },
 });
