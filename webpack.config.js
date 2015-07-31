@@ -30,7 +30,7 @@ module.exports = {
       },
       {
         test: /\.scss$/,
-        loader: "style!css!sass",
+        loader: "style!css!sass!autoprefixer?browsers=last 2 versions",
         include: path.join(__dirname, 'src')
       }
     ]

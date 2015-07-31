@@ -1,0 +1,25 @@
+.react-video {
+  position: relative;
+
+  video {
+    position: relative;
+    z-index: 1;
+    background: black;
+  }
+
+  &:fullscreen,
+  &:fullscreen video {
+    width: 100vw !important;
+    height: 100vh !important;
+  }
+}
+
+.react-video-controls {
+  color: white;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  background: rgba(0, 0, 0, .5);
+  z-index: 2;
+}

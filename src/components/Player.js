@@ -1,7 +1,6 @@
 "use strict"
 
 import * as _rv from '../helpers.js'
-import cx from 'classnames'
 import React from 'react'
 import Video from './Video'
 // import Controls from './Controls'
@@ -125,13 +124,16 @@ export default class Player extends React.Component {
   // }
 
   _toggleFullscreen() {
-    if (this.state.fullscreen) {
-      _rv.exitFullscreen();
-    } else {
-      _rv.enterFullscreen(React.findDOMNode(this.refs.player));
+    const fullscreenElement = document.fullscreenElement ||
+      document.webkitFullscreenElement ||
+      document.mozFullScreenElement ||
+      document.msFullscreenElement;
+
+    if (fullscreenElement) {
+      return _rv.exitFullscreen();
     }
 
-    this.setState({fullscreen: !this.state.fullscreen});
+    _rv.enterFullscreen(React.findDOMNode(this.refs.player));
   }
 
   // // _onFullscreenEnterRequest() {
@@ -168,11 +170,9 @@ export default class Player extends React.Component {
 
   render() {
     const { width, height, src, ...restProps } = this.props;
-    const wrapperCx = cx('react-video', {
-      'react-video-fullscreen': this.state.fullscreen
-    });
+
     return (
-      <div ref="player" className={wrapperCx} style={{...{}, width, height}}>
+      <div ref="player" className="react-video" style={{...{}, width, height}}>
         <Video
           ref="video"
           src={src} width={width} height={height}
