@@ -2,6 +2,7 @@
 
 import React, { Component, PropTypes } from 'react';
 import UIRange from '../../ui/range';
+import TimeIndicator from './TimeIndicator';
 
 export default class Timeline extends Component {
 
@@ -43,7 +44,12 @@ export default class Timeline extends Component {
       onChange: this.onChange,
     };
 
-    return <UIRange step={1} min={0} {...props}/>;
+    return (
+      <div>
+        <UIRange step={1} min={0} {...props}/>
+        <TimeIndicator currentTime={props.value} totalDuration={props.max} />
+      </div>
+    );
   }
 }
 
