@@ -3,7 +3,7 @@
 import React, { PropTypes } from 'react';
 import Video from './Video';
 import Controls from './Controls/';
-import * as _rv from '../helpers.js';
+import { enterFullscreen, exitFullscreen, fullscreenEnabled, fullscreenElement } from '../helpers.js';
 import '../localStorageShim';
 
 class Player extends React.Component {
@@ -14,31 +14,36 @@ class Player extends React.Component {
     this.state = {
       currentTime: 0,
       duration: 0,
+      fullscreen: false,
       playing: false,
       volume: parseFloat(localStorage.getItem('rvp.volume')),
     };
 
-    this.setMeta = this.setMeta.bind(this);
+    this.currentTimeChanged = this.currentTimeChanged.bind(this);
+    this.durationChanged = this.durationChanged.bind(this);
+    this.handleFullscreenChange = this.handleFullscreenChange.bind(this);
     this.play = this.play.bind(this);
     this.pause = this.pause.bind(this);
-    this.togglePlayback = this.togglePlayback.bind(this);
-    this.playbackStarted = this.playbackStarted.bind(this);
     this.playbackPaused = this.playbackPaused.bind(this);
-    this.setVolume = this.setVolume.bind(this);
-    this.durationChanged = this.durationChanged.bind(this);
-    this.currentTimeChanged = this.currentTimeChanged.bind(this);
+    this.playbackStarted = this.playbackStarted.bind(this);
     this.setCurrentTime = this.setCurrentTime.bind(this);
+    this.setMeta = this.setMeta.bind(this);
+    this.setVolume = this.setVolume.bind(this);
+    this.toggleFullscreen = this.toggleFullscreen.bind(this);
+    this.togglePlayback = this.togglePlayback.bind(this);
   }
 
   getChildContext() {
     return {
       currentTime: this.state.currentTime,
       duration: this.state.duration,
+      fullscreen: this.state.fullscreen,
       pause: this.pause,
       play: this.play,
       playing: this.state.playing,
       setCurrentTime: this.setCurrentTime,
       setVolume: this.setVolume,
+      toggleFullscreen: this.toggleFullscreen,
       togglePlayback: this.togglePlayback,
       volume: this.state.volume,
     };
@@ -46,6 +51,17 @@ class Player extends React.Component {
 
   componentDidMount() {
     this.setVolume(this.state.volume);
+    document.addEventListener('fullscreenchange', this.handleFullscreenChange);
+    document.addEventListener('mozfullscreenchange', this.handleFullscreenChange);
+    document.addEventListener('webkitfullscreenchange', this.handleFullscreenChange);
+    document.addEventListener('MSFullscreenChange', this.handleFullscreenChange);
+  }
+
+  componentWillUnmount() {
+    document.removeEventListener('fullscreenchange', this.handleFullscreenChange);
+    document.removeEventListener('mozfullscreenchange', this.handleFullscreenChange);
+    document.removeEventListener('webkitfullscreenchange', this.handleFullscreenChange);
+    document.removeEventListener('MSFullscreenChange', this.handleFullscreenChange);
   }
 
   /**
@@ -108,6 +124,21 @@ class Player extends React.Component {
     this.setState({currentTime});
   }
 
+  /**
+   * FULLSCREEN CONTROLS
+   */
+  toggleFullscreen() {
+    if (this.state.fullscreen) return exitFullscreen();
+
+    enterFullscreen(this.refs.video.refs.element);
+  }
+
+  handleFullscreenChange(event) {
+    const fullscreen = fullscreenElement() !== null;
+
+    this.setState({fullscreen});
+  }
+
   render() {
     const { setMeta, togglePlayback, playbackStarted, playbackPaused, setVolume, durationChanged, setCurrentTime, currentTimeChanged } = this;
     const { width, height, src } = this.props;
@@ -135,13 +166,15 @@ class Player extends React.Component {
 Player.childContextTypes = {
   currentTime: PropTypes.number,
   duration: PropTypes.number,
+  fullscreen: PropTypes.bool,
   pause: PropTypes.func,
   play: PropTypes.func,
   playing: PropTypes.bool,
   setCurrentTime: PropTypes.func,
-  volume: PropTypes.number,
-  togglePlayback: PropTypes.func,
   setVolume: PropTypes.func,
+  toggleFullscreen: PropTypes.func,
+  togglePlayback: PropTypes.func,
+  volume: PropTypes.number,
 };
 
 Player.propTypes = {

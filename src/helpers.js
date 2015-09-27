@@ -1,7 +1,15 @@
 "use strict";
 
 // "No operation" function.
-export function noop () {};
+export function noop () {}
+
+export function fullscreenElement () {
+  return document.fullscreenElement || document.mozFullScreenElement || document.webkitFullscreenElement;
+}
+
+export function fullscreenEnabled () {
+  return document.fullscreenEnabled || document.mozFullScreenEnabled || document.webkitFullscreenEnabled;
+}
 
 // Request fullscreen for given element.
 export function enterFullscreen (element)
