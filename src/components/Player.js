@@ -19,6 +19,7 @@ class Player extends React.Component {
       volume: parseFloat(localStorage.getItem('rvp.volume')),
     };
 
+    this.beforeUnload = this.beforeUnload.bind(this);
     this.currentTimeChanged = this.currentTimeChanged.bind(this);
     this.durationChanged = this.durationChanged.bind(this);
     this.handleFullscreenChange = this.handleFullscreenChange.bind(this);
@@ -26,6 +27,7 @@ class Player extends React.Component {
     this.pause = this.pause.bind(this);
     this.playbackPaused = this.playbackPaused.bind(this);
     this.playbackStarted = this.playbackStarted.bind(this);
+    this.resumeLastSession = this.resumeLastSession.bind(this);
     this.setCurrentTime = this.setCurrentTime.bind(this);
     this.setMeta = this.setMeta.bind(this);
     this.setVolume = this.setVolume.bind(this);
@@ -50,18 +52,48 @@ class Player extends React.Component {
   }
 
   componentDidMount() {
-    this.setVolume(this.state.volume);
+    this.resumeLastSession();
+
+    window.addEventListener("beforeunload", this.beforeUnload);
     document.addEventListener('fullscreenchange', this.handleFullscreenChange);
+    document.addEventListener('MSFullscreenChange', this.handleFullscreenChange);
     document.addEventListener('mozfullscreenchange', this.handleFullscreenChange);
     document.addEventListener('webkitfullscreenchange', this.handleFullscreenChange);
-    document.addEventListener('MSFullscreenChange', this.handleFullscreenChange);
   }
 
   componentWillUnmount() {
+    window.removeEventListener("beforeunload", this.beforeUnload);
     document.removeEventListener('fullscreenchange', this.handleFullscreenChange);
+    document.removeEventListener('MSFullscreenChange', this.handleFullscreenChange);
     document.removeEventListener('mozfullscreenchange', this.handleFullscreenChange);
     document.removeEventListener('webkitfullscreenchange', this.handleFullscreenChange);
-    document.removeEventListener('MSFullscreenChange', this.handleFullscreenChange);
+  }
+
+  /**
+   * SESSION HANDLERS
+   */
+  beforeUnload() {
+    localStorage.setItem('rvp.closedAt', new Date().getTime());
+    localStorage.setItem('rvp.currentTime', this.state.currentTime);
+    localStorage.setItem('rvp.playing', this.state.playing);
+    localStorage.setItem('rvp.volume', this.state.volume);
+  }
+
+  resumeLastSession() {
+    this.setVolume(this.state.volume);
+
+    // If user reopened tab in short time window resume playback from last position.
+    // Don't resume after reload (if time window is shorter than 1 second).
+    const now = new Date().getTime();
+    const closedAt = parseInt(localStorage.getItem('rvp.closedAt'));
+    const inTimeWindow = now - closedAt < 5000 && now - closedAt > 1000 ;
+    const currentTime = parseInt(localStorage.getItem('rvp.currentTime'));
+    const playing = localStorage.getItem('rvp.playing') === 'true';
+
+    if (playing && inTimeWindow) {
+      this.setCurrentTime(currentTime);
+      this.togglePlayback();
+    }
   }
 
   /**
@@ -104,7 +136,6 @@ class Player extends React.Component {
    */
   setVolume(volume) {
     this.setState({volume});
-    localStorage.setItem('rvp.volume', volume);
     this.refs.video.refs.element.volume = volume;
   }
 
