@@ -1,189 +1,159 @@
-"use strict"
+"use strict";
 
-import * as _rv from '../helpers.js'
-import React from 'react'
-import Video from './Video'
-// import Controls from './Controls'
+import React, { PropTypes } from 'react';
+import Video from './Video';
+import Controls from './Controls/';
+import * as _rv from '../helpers.js';
+import '../localStorageShim';
 
-
-
-
-export default class Player extends React.Component {
-
-  displayName = "Player"
-
-  state = {
-    fullscreen: false,
-    seekInProgress: false,
-  }
+class Player extends React.Component {
 
   constructor (props) {
     super(props);
 
-    this._setDownloadProgress = this._setDownloadProgress.bind(this);
-    this._setCurrentTimeFromVideo = this._setCurrentTimeFromVideo.bind(this);
-    this._setMetadata = this._setMetadata.bind(this);
-    this._toggleFullscreen = this._toggleFullscreen.bind(this);
+    this.state = {
+      currentTime: 0,
+      duration: 0,
+      playing: false,
+      volume: parseFloat(localStorage.getItem('rvp.volume')),
+    };
+
+    this.setMeta = this.setMeta.bind(this);
+    this.play = this.play.bind(this);
+    this.pause = this.pause.bind(this);
+    this.togglePlayback = this.togglePlayback.bind(this);
+    this.playbackStarted = this.playbackStarted.bind(this);
+    this.playbackPaused = this.playbackPaused.bind(this);
+    this.setVolume = this.setVolume.bind(this);
+    this.durationChanged = this.durationChanged.bind(this);
+    this.currentTimeChanged = this.currentTimeChanged.bind(this);
+    this.setCurrentTime = this.setCurrentTime.bind(this);
   }
 
-  // propTypes: {
-  //   src: React.PropTypes.any.isRequired,
-  //   width: React.PropTypes.number.isRequired,
-  //   height: React.PropTypes.number.isRequired,
-  //   autoPlay: React.PropTypes.bool,
-  // }
-  //
-  // getInitialState() {
-  //   return {
-  //     currentTime: 0,
-  //     duration: 0,
-  //     paused: ! this.props.autoPlay,
-  //     muted: false,
-  //     volume: 0,
-  //     ranges: null,
-  //   };
-  // }
-  //
-  // _video() {
-  //   return React.findDOMNode(this.refs.video);
-  // }
-  //
-  // _togglePlayback() {
-  //   if (this.state.paused) {
-  //     this._playVideo();
-  //   } else {
-  //     this._pauseVideo();
-  //   }
-  // }
-  //
-  // _playVideo() {
-  //   if (! this.state.paused) { return; }
-  //   this.setState({paused: false});
-  //   this._video().play();
-  // }
-  //
-  // _pauseVideo() {
-  //   if (this.state.paused) { return; }
-  //   this.setState({paused: true});
-  //   this._video().pause();
-  // }
-
-  _setCurrentTimeFromVideo(time) {
-    if (this.state.seekInProgress) { return; }
-    this.setState({currentTime: time});
+  getChildContext() {
+    return {
+      currentTime: this.state.currentTime,
+      duration: this.state.duration,
+      pause: this.pause,
+      play: this.play,
+      playing: this.state.playing,
+      setCurrentTime: this.setCurrentTime,
+      setVolume: this.setVolume,
+      togglePlayback: this.togglePlayback,
+      volume: this.state.volume,
+    };
   }
 
-  _setMetadata(metadata) {
-    this.setState({
-      currentTime: metadata.currentTime,
-      duration: metadata.duration,
-      muted: metadata.muted,
-      volume: metadata.volume,
-    });
+  componentDidMount() {
+    this.setVolume(this.state.volume);
   }
 
-  // _setVolume(level) {
-  //   this.setState({
-  //     volume: level,
-  //     muted: false,
-  //   });
-  //   this._video().volume = level;
-  //   this._video().muted = false;
-  // }
-  //
-  // _toggleMute() {
-  //   this._video().muted = !this.state.muted;
-  //   this.setState({muted: !this.state.muted});
-  // }
-  //
-  // _onEnd() {
-  //   this.setState({paused: true});
-  // }
-
-  _setDownloadProgress(ranges) {
-    this.setState({ranges: ranges});
+  /**
+   * METADATA & EVENTS
+   */
+  setMeta(meta) {
+    this.setState(meta);
   }
 
-  // _onSeekStart() {
-  //   this.state.playAfterSeek = ! this.state.paused;
-  //   this.state.seekInProgress = true;
-  //   this._pauseVideo();
-  // }
-  //
-  // _onSeekProgress(time) {
-  //   this.setState({currentTime: time});
-  //   this._video().currentTime = time;
-  // }
-  //
-  // _onSeekEnd() {
-  //   if (this.state.playAfterSeek) {
-  //     this._playVideo();
-  //   }
-  //   this.state.playAfterSeek = false;
-  //   this.state.seekInProgress = false;
-  // }
+  /**
+   * PLAYBACK CONTROLS
+   * Listen to playback state changes.
+   */
+  play() {
+    this.refs.video.refs.element.play();
+  }
 
-  _toggleFullscreen() {
-    const fullscreenElement = document.fullscreenElement ||
-      document.webkitFullscreenElement ||
-      document.mozFullScreenElement ||
-      document.msFullscreenElement;
+  pause() {
+    this.refs.video.refs.element.pause();
+  }
 
-    if (fullscreenElement) {
-      return _rv.exitFullscreen();
+  togglePlayback() {
+    if (this.state.playing) {
+      this.pause();
+    } else {
+      this.play();
     }
-
-    _rv.enterFullscreen(React.findDOMNode(this.refs.player));
   }
 
-  // // _onFullscreenEnterRequest() {
-  // //   console.log('fs enter');
-  // // },
-  // //
-  // // _onFullscreenExitRequest() {
-  // //   console.log('fs exit');
-  // // },
-  //
-  _renderControls() {
-    return (
-      <div className="react-video-controls">
-        <div onClick={this._toggleFullscreen}>Fullscreen</div>
-      </div>
-    );
-  //
-  //   return (
-  //     <Controls
-  //       video={this.refs.video}
-  //       player={this.refs.player}
-  //       requestPlaybackToggle={this._togglePlayback}
-  //       requestVolumeChange={this._setVolume}
-  //       requestMute={this._toggleMute}
-  //       requestSeekStart={this._onSeekStart}
-  //       requestSeekProgress={this._onSeekProgress}
-  //       requestSeekEnd={this._onSeekEnd}
-  //       requestFullscreenEnter={this._onFullscreenEnterRequest}
-  //       requestFullscreenExit={this._onFullscreenExitRequest}
-  //       {...this.state}
-  //     />
-  //   );
+  playbackStarted() {
+    this.setState({playing: true});
+  }
+
+  playbackPaused() {
+    this.setState({playing: false});
+  }
+
+  /**
+   * VOLUME CONTROLS
+   */
+  setVolume(volume) {
+    this.setState({volume});
+    localStorage.setItem('rvp.volume', volume);
+    this.refs.video.refs.element.volume = volume;
+  }
+
+  /**
+   * SEEK CONTROLS
+   */
+  durationChanged(duration) {
+    this.setState({duration});
+  }
+
+  setCurrentTime(currentTime) {
+    this.setState({currentTime});
+    this.refs.video.refs.element.currentTime = currentTime;
+  }
+
+  currentTimeChanged(currentTime) {
+    this.setState({currentTime});
   }
 
   render() {
-    const { width, height, src, ...restProps } = this.props;
+    const { setMeta, togglePlayback, playbackStarted, playbackPaused, setVolume, durationChanged, setCurrentTime, currentTimeChanged } = this;
+    const { width, height, src } = this.props;
+
+    const videoProps = {
+      width,
+      height,
+      src,
+      setMeta,
+      playbackStarted,
+      playbackPaused,
+      durationChanged,
+      currentTimeChanged,
+    };
 
     return (
-      <div ref="player" className="react-video" style={{...{}, width, height}}>
-        <Video
-          ref="video"
-          src={src} width={width} height={height}
-          metadataLoaded={this._setMetadata}
-          onDownloadProgress={this._setDownloadProgress}
-          currentTimeChanged={this._setCurrentTimeFromVideo}
-          onEnd={this._onEnd}
-          {...restProps}
-        />
-        { this._renderControls() }
+      <div ref="player" className="react-video" style={{width, height}}>
+        <Video ref="video" {...videoProps} />
+        <Controls />
       </div>
     );
   }
+}
+
+Player.childContextTypes = {
+  currentTime: PropTypes.number,
+  duration: PropTypes.number,
+  pause: PropTypes.func,
+  play: PropTypes.func,
+  playing: PropTypes.bool,
+  setCurrentTime: PropTypes.func,
+  volume: PropTypes.number,
+  togglePlayback: PropTypes.func,
+  setVolume: PropTypes.func,
 };
+
+Player.propTypes = {
+  // Video props
+  src: PropTypes.arrayOf(
+    PropTypes.shape({
+      url: PropTypes.string.isRequired,
+      type: PropTypes.string,
+    })
+  ).isRequired,
+  width: PropTypes.number.isRequired,
+  height: PropTypes.number.isRequired,
+};
+
+export default Player;

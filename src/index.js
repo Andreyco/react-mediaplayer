@@ -1,12 +1,14 @@
-import css from "./scss/react-video-base.scss";
 import React from 'react';
+import ReactDom from 'react-dom';
 import Player from './components/Player';
 
 const src = [
   {
-    url: '/src/video.mp4',
+    url: '/video.mp4',
     type: 'video/mp4',
   }
 ];
 
-React.render(<Player src={src} width={480} height={300} autoPlay />, document.body);
+const wrapper = document.getElementById('react-video-player');
+
+ReactDom.render(<Player src={src} width={480} height={300} autoPlayy />, wrapper);
