@@ -2,7 +2,7 @@
 
 import React, { Component, PropTypes} from 'react';
 
-class UIRange extends Component {
+export default class UIRange extends Component {
 
   constructor(props) {
     super(props);
@@ -67,5 +67,3 @@ UIRange.defaultProps = {
   afterChange: () => {},
   beforeChange: () => {},
 };
-
-export default UIRange;

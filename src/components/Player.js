@@ -6,7 +6,7 @@ import Controls from './Controls/';
 import { enterFullscreen, exitFullscreen, fullscreenEnabled, fullscreenElement } from '../helpers.js';
 import '../localStorageShim';
 
-class Player extends React.Component {
+export default class Player extends React.Component {
 
   constructor (props) {
     super(props);
@@ -176,5 +176,3 @@ Player.propTypes = {
   width: PropTypes.number.isRequired,
   height: PropTypes.number.isRequired,
 };
-
-export default Player;

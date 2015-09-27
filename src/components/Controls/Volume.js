@@ -3,20 +3,7 @@
 import React, { Component, PropTypes } from 'react';
 import UIRange from '../../ui/range';
 
-class Volume extends Component {
-
-  constructor(props) {
-    super(props);
-
-    this.state = {};
-
-    this.onChange = this.onChange.bind(this);
-  }
-
-  onChange(value) {
-    this.context.setCurrentTime(value);
-  }
-
+export default class Volume extends Component {
   render() {
     const props = {
       value: this.context.volume,
@@ -31,5 +18,3 @@ Volume.contextTypes = {
   volume: PropTypes.number,
   setVolume: PropTypes.func,
 };
-
-export default Volume;

@@ -12,8 +12,8 @@ export default class Timeline extends Component {
     this.state = {};
 
     this.beforeChange = this.beforeChange.bind(this);
-    this.onChange = this.onChange.bind(this);
     this.afterChange = this.afterChange.bind(this);
+    this.onChange = this.onChange.bind(this);
   }
 
   beforeChange() {
@@ -23,16 +23,16 @@ export default class Timeline extends Component {
     }
   }
 
-  onChange(value) {
-    this.context.setCurrentTime(value);
-  }
-
   afterChange() {
     if (this.state.resume) {
       this.context.togglePlayback();
     }
 
     this.setState({resume: false});
+  }
+
+  onChange(value) {
+    this.context.setCurrentTime(value);
   }
 
   render() {
@@ -47,7 +47,7 @@ export default class Timeline extends Component {
     return (
       <div>
         <UIRange step={1} min={0} {...props}/>
-        <TimeIndicator currentTime={props.value} totalDuration={props.max} />
+        <TimeIndicator currentTime={props.value} duration={props.max} />
       </div>
     );
   }
