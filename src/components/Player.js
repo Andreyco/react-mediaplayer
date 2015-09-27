@@ -130,7 +130,7 @@ class Player extends React.Component {
   toggleFullscreen() {
     if (this.state.fullscreen) return exitFullscreen();
 
-    enterFullscreen(this.refs.video.refs.element);
+    enterFullscreen(this.refs.player);
   }
 
   handleFullscreenChange(event) {
