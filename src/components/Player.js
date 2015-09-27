@@ -20,13 +20,7 @@ class Player extends React.Component {
     };
 
     this.beforeUnload = this.beforeUnload.bind(this);
-    this.currentTimeChanged = this.currentTimeChanged.bind(this);
-    this.durationChanged = this.durationChanged.bind(this);
     this.handleFullscreenChange = this.handleFullscreenChange.bind(this);
-    this.play = this.play.bind(this);
-    this.pause = this.pause.bind(this);
-    this.playbackPaused = this.playbackPaused.bind(this);
-    this.playbackStarted = this.playbackStarted.bind(this);
     this.resumeLastSession = this.resumeLastSession.bind(this);
     this.setCurrentTime = this.setCurrentTime.bind(this);
     this.setMeta = this.setMeta.bind(this);
@@ -40,10 +34,9 @@ class Player extends React.Component {
       currentTime: this.state.currentTime,
       duration: this.state.duration,
       fullscreen: this.state.fullscreen,
-      pause: this.pause,
-      play: this.play,
       playing: this.state.playing,
       setCurrentTime: this.setCurrentTime,
+      setMeta: this.setMeta,
       setVolume: this.setVolume,
       toggleFullscreen: this.toggleFullscreen,
       togglePlayback: this.togglePlayback,
@@ -107,51 +100,23 @@ class Player extends React.Component {
    * PLAYBACK CONTROLS
    * Listen to playback state changes.
    */
-  play() {
-    this.refs.video.refs.element.play();
-  }
-
-  pause() {
-    this.refs.video.refs.element.pause();
-  }
-
   togglePlayback() {
-    if (this.state.playing) {
-      this.pause();
-    } else {
-      this.play();
-    }
-  }
-
-  playbackStarted() {
-    this.setState({playing: true});
-  }
-
-  playbackPaused() {
-    this.setState({playing: false});
+    if (this.state.playing) this.refs.video.refs.element.pause();
+    else this.refs.video.refs.element.play();
   }
 
   /**
    * VOLUME CONTROLS
    */
   setVolume(volume) {
-    this.setState({volume});
     this.refs.video.refs.element.volume = volume;
   }
 
   /**
    * SEEK CONTROLS
    */
-  durationChanged(duration) {
-    this.setState({duration});
-  }
-
   setCurrentTime(currentTime) {
-    this.setState({currentTime});
     this.refs.video.refs.element.currentTime = currentTime;
-  }
-
-  currentTimeChanged(currentTime) {
     this.setState({currentTime});
   }
 
@@ -159,30 +124,23 @@ class Player extends React.Component {
    * FULLSCREEN CONTROLS
    */
   toggleFullscreen() {
-    if (this.state.fullscreen) return exitFullscreen();
-
-    enterFullscreen(this.refs.player);
+    if (fullscreenElement() === this.refs.player) exitFullscreen();
+    else enterFullscreen(this.refs.player);
   }
 
   handleFullscreenChange(event) {
-    const fullscreen = fullscreenElement() !== null;
-
+    const fullscreen = fullscreenElement() === this.refs.player;
     this.setState({fullscreen});
   }
 
   render() {
-    const { setMeta, togglePlayback, playbackStarted, playbackPaused, setVolume, durationChanged, setCurrentTime, currentTimeChanged } = this;
+    const { togglePlayback, setCurrentTime } = this;
     const { width, height, src } = this.props;
 
     const videoProps = {
       width,
       height,
       src,
-      setMeta,
-      playbackStarted,
-      playbackPaused,
-      durationChanged,
-      currentTimeChanged,
     };
 
     return (
@@ -198,10 +156,9 @@ Player.childContextTypes = {
   currentTime: PropTypes.number,
   duration: PropTypes.number,
   fullscreen: PropTypes.bool,
-  pause: PropTypes.func,
-  play: PropTypes.func,
   playing: PropTypes.bool,
   setCurrentTime: PropTypes.func,
+  setMeta: PropTypes.func,
   setVolume: PropTypes.func,
   toggleFullscreen: PropTypes.func,
   togglePlayback: PropTypes.func,

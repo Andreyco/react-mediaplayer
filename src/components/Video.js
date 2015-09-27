@@ -2,24 +2,25 @@
 
 import React, { PropTypes, Component } from 'react';
 
-class Video extends Component {
+export default class Video extends Component {
   componentDidMount() {
+    const { setMeta } = this.context;
     const { element } = this.refs;
-    element.addEventListener('loadedmetadata', e => this.props.setMeta({
+    element.addEventListener('durationchange', e => setMeta({duration: e.target.duration}));
+    element.addEventListener('loadedmetadata', e => setMeta({
       currentTime: e.target.currentTime,
       duration: e.target.duration,
     }));
-    element.addEventListener('playing', this.props.playbackStarted);
-    element.addEventListener('pause', this.props.playbackPaused);
-    element.addEventListener('volumechange', this.props.volumeChanged);
-    element.addEventListener('durationchange', e => this.props.durationChanged(e.target.duration));
-    element.addEventListener('timeupdate', e => this.props.currentTimeChanged(e.target.currentTime));
+    element.addEventListener('pause', e => setMeta({playing: false}));
+    element.addEventListener('playing', e => setMeta({playing: true}));
+    element.addEventListener('timeupdate', e => setMeta({currentTime: e.target.currentTime}));
+    element.addEventListener('volumechange', e => setMeta({volume: e.target.volume}));
   }
 
   render() {
     const { width, height, src } = this.props;
     return (
-      <video ref="element" width={width} height={height}>
+      <video ref="element" {...{width, height}}>
         { src.map((s, i) => <source key={`${s.url}${i}`} src={s.url} type={s.type} />) }
       </video>
     );
@@ -35,12 +36,12 @@ Video.propTypes = {
   ).isRequired,
   width: PropTypes.number.isRequired,
   height: PropTypes.number.isRequired,
-  playbackStarted: PropTypes.func.isRequired,
-  playbackPaused: PropTypes.func.isRequired,
 };
 
-export default Video;
 
+Video.contextTypes = {
+  setMeta: PropTypes.func.isRequired,
+};
 
 // module.exports = React.createClass({
 //
