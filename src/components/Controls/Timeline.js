@@ -3,7 +3,7 @@
 import React, { Component, PropTypes } from 'react';
 import UIRange from '../../ui/range';
 
-class Timeline extends Component {
+export default class Timeline extends Component {
 
   constructor(props) {
     super(props);
@@ -18,7 +18,7 @@ class Timeline extends Component {
   beforeChange() {
     if (this.context.playing) {
       this.setState({resume: true});
-      this.context.pause();
+      this.context.togglePlayback();
     }
   }
 
@@ -28,7 +28,7 @@ class Timeline extends Component {
 
   afterChange() {
     if (this.state.resume) {
-      this.context.play();
+      this.context.togglePlayback();
     }
 
     this.setState({resume: false});
@@ -50,10 +50,7 @@ class Timeline extends Component {
 Timeline.contextTypes = {
   currentTime: PropTypes.number,
   duration: PropTypes.number,
-  pause: PropTypes.func,
-  play: PropTypes.func,
   playing: PropTypes.bool.isRequired,
   setCurrentTime: PropTypes.func,
+  togglePlayback: PropTypes.func.isRequired,
 };
-
-export default Timeline;
