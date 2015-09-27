@@ -58,9 +58,14 @@ UIRange.propTypes = {
   min: PropTypes.number.isRequired,
   step: PropTypes.number.isRequired,
   value: PropTypes.number.isRequired,
-  afterChange: PropTypes.func.isRequired,
-  beforeChange: PropTypes.func.isRequired,
+  afterChange: PropTypes.func,
+  beforeChange: PropTypes.func,
   onChange: PropTypes.func.isRequired,
+};
+
+UIRange.defaultProps = {
+  afterChange: () => {},
+  beforeChange: () => {},
 };
 
 export default UIRange;
