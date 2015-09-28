@@ -1,7 +1,7 @@
 "use strict";
 
 import React, { Component, PropTypes } from 'react';
-import UIRange from '../../ui/range';
+import UISlider from '../../ui/slider';
 import TimeIndicator from './TimeIndicator';
 
 export default class Timeline extends Component {
@@ -46,7 +46,7 @@ export default class Timeline extends Component {
 
     return (
       <div>
-        <UIRange step={1} min={0} {...props}/>
+          <UISlider step={1} min={0} {...props}/>
         <TimeIndicator currentTime={props.value} duration={props.max} />
       </div>
     );
