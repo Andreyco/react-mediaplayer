@@ -1,24 +1,32 @@
 "use strict";
 
 // Bind event listeners to target.
-export function on (target, eventName, listener, capture = false) {
-  return target.addEventListener(eventName, listener, capture);
+export function on (el, events, cb, capture = false) {
+  events.split(' ').map(event => {
+    if (event) el.addEventListener(event, cb, capture);
+  });
 }
 
 // Unbind event listeners
-export function off (target, eventName, listener, capture = false) {
-  target.removeEventListener(eventName, listener, capture);
+export function off (el, events, cb, capture = false) {
+  events.split(' ').map(event => {
+    if (event) el.removeEventListener(event, cb, capture);
+  });
 }
 
 // "No operation" function.
 export function noop () {}
 
 export function fullscreenElement () {
-  return document.fullscreenElement || document.mozFullScreenElement || document.webkitFullscreenElement;
+  return document.fullscreenElement ||
+    document.mozFullScreenElement ||
+    document.webkitFullscreenElement;
 }
 
 export function fullscreenEnabled () {
-  return document.fullscreenEnabled || document.mozFullScreenEnabled || document.webkitFullscreenEnabled;
+  return document.fullscreenEnabled ||
+    document.mozFullScreenEnabled ||
+    document.webkitFullscreenEnabled;
 }
 
 // Request fullscreen for given element.
