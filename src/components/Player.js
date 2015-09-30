@@ -69,10 +69,9 @@ export default class Player extends React.Component {
   }
 
   resumeLastSession() {
-    this.setVolume(this.state.volume);
-
-    // If user reopened tab in short time window resume playback from last position.
-    // Don't resume after reload (if time window is shorter than 1 second).
+    // If user reopened tab in short time window resume playback from last
+    // position. Don't resume after reload (if time window is shorter
+    // than 1 second).
     const now = new Date().getTime();
     const closedAt = parseInt(localStorage.getItem('rvp.closedAt'));
     const inTimeWindow = now - closedAt < 5000 && now - closedAt > 1000 ;
@@ -83,6 +82,8 @@ export default class Player extends React.Component {
       this.setCurrentTime(currentTime);
       this.togglePlayback();
     }
+
+    this.setVolume(this.state.volume);
   }
 
   /**
@@ -120,28 +121,20 @@ export default class Player extends React.Component {
    * FULLSCREEN CONTROLS
    */
   toggleFullscreen() {
-    if (fullscreenElement() === this.refs.player) exitFullscreen();
+    if (this.state.fullscreen) exitFullscreen();
     else enterFullscreen(this.refs.player);
   }
 
-  handleFullscreenChange(event) {
+  handleFullscreen() {
     const fullscreen = fullscreenElement() === this.refs.player;
     this.setState({fullscreen});
   }
 
   render() {
-    const { togglePlayback, setCurrentTime } = this;
     const { width, height, src } = this.props;
-
-    const videoProps = {
-      width,
-      height,
-      src,
-    };
-
     return (
       <div ref="player" className="react-video" style={{width, height}}>
-        <Video ref="video" {...videoProps} />
+        <Video ref="video" {...{width, height, src}} />
         <Controls />
       </div>
     );
