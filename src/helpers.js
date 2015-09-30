@@ -1,5 +1,15 @@
 "use strict";
 
+// Bind event listeners to target.
+export function on (target, eventName, listener, capture = false) {
+  return target.addEventListener(eventName, listener, capture);
+}
+
+// Unbind event listeners
+export function off (target, eventName, listener, capture = false) {
+  target.removeEventListener(eventName, listener, capture);
+}
+
 // "No operation" function.
 export function noop () {}
 
