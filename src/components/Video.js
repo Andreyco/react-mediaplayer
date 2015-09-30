@@ -36,6 +36,24 @@ const setVolume = function(event) {
 };
 
 
+
+/**
+ * Video Source
+ */
+const Source = function({src, type}, key) {
+  return <source {...{key, src, type}} />;
+};
+
+Source.propTypes = {
+  src: PropTypes.string.isRequired,
+  type: PropTypes.string,
+};
+
+
+
+/**
+ * Video component
+ */
 export default class Video extends Component {
   componentDidMount() {
     on(this.refs.element, 'durationchange', setDuration.bind(this));
@@ -61,7 +79,7 @@ export default class Video extends Component {
     const { width, height, src } = this.props;
     return (
       <video ref="element" {...{width, height}}>
-        { src.map((s, i) => <source key={`${s.url}${i}`} src={s.url} type={s.type} />) }
+        { src.map(Source) }
       </video>
     );
   }
@@ -70,7 +88,7 @@ export default class Video extends Component {
 Video.propTypes = {
   src: PropTypes.arrayOf(
     PropTypes.shape({
-      url: PropTypes.string.isRequired,
+      src: PropTypes.string.isRequired,
       type: PropTypes.string,
     })
   ).isRequired,

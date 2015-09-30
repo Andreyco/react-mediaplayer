@@ -169,7 +169,7 @@ Player.propTypes = {
   // Video props
   src: PropTypes.arrayOf(
     PropTypes.shape({
-      url: PropTypes.string.isRequired,
+      src: PropTypes.string.isRequired,
       type: PropTypes.string,
     })
   ).isRequired,

@@ -4,7 +4,7 @@ import Player from './components/Player';
 
 const src = [
   {
-    url: '/video.mp4',
+    src: '/video.mp4',
     type: 'video/mp4',
   }
 ];
