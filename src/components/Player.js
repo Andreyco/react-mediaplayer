@@ -3,8 +3,11 @@
 import React, { PropTypes } from 'react';
 import Video from './Video';
 import Controls from './Controls/';
-import { enterFullscreen, exitFullscreen, fullscreenEnabled, fullscreenElement } from '../helpers.js';
 import '../localStorageShim';
+import {
+  on, off,
+  enterFullscreen, exitFullscreen, fullscreenElement
+} from '../helpers.js';
 
 export default class Player extends React.Component {
 
@@ -19,9 +22,6 @@ export default class Player extends React.Component {
       volume: parseFloat(localStorage.getItem('rvp.volume')),
     };
 
-    this.beforeUnload = this.beforeUnload.bind(this);
-    this.handleFullscreenChange = this.handleFullscreenChange.bind(this);
-    this.resumeLastSession = this.resumeLastSession.bind(this);
     this.setCurrentTime = this.setCurrentTime.bind(this);
     this.setMeta = this.setMeta.bind(this);
     this.setVolume = this.setVolume.bind(this);
@@ -47,19 +47,15 @@ export default class Player extends React.Component {
   componentDidMount() {
     this.resumeLastSession();
 
-    window.addEventListener("beforeunload", this.beforeUnload);
-    document.addEventListener('fullscreenchange', this.handleFullscreenChange);
-    document.addEventListener('MSFullscreenChange', this.handleFullscreenChange);
-    document.addEventListener('mozfullscreenchange', this.handleFullscreenChange);
-    document.addEventListener('webkitfullscreenchange', this.handleFullscreenChange);
+    on(window, 'beforeunload', this.beforeUnload.bind(this));
+    on(document, `fullscreenchange MSFullscreenChange mozfullscreenchange
+      webkitfullscreenchange`, this.handleFullscreen.bind(this));
   }
 
   componentWillUnmount() {
-    window.removeEventListener("beforeunload", this.beforeUnload);
-    document.removeEventListener('fullscreenchange', this.handleFullscreenChange);
-    document.removeEventListener('MSFullscreenChange', this.handleFullscreenChange);
-    document.removeEventListener('mozfullscreenchange', this.handleFullscreenChange);
-    document.removeEventListener('webkitfullscreenchange', this.handleFullscreenChange);
+    off(window, 'beforeunload', this.beforeUnload);
+    off(document, `fullscreenchange MSFullscreenChange mozfullscreenchange
+      webkitfullscreenchange`, this.handleFullscreen);
   }
 
   /**
