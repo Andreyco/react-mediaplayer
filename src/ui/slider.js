@@ -24,7 +24,7 @@ export default class UIRange extends Component {
     document.addEventListener('mouseup', this.handleMouseUp);
   }
 
-  handleMouseUp(event) {
+  handleMouseUp() {
     this.props.afterChange();
     document.removeEventListener('mousemove', this.handleChange);
     document.removeEventListener('mouseup', this.handleMouseUp);
@@ -43,6 +43,7 @@ export default class UIRange extends Component {
     const { value, max } = this.props;
     const width = max === 0 ? 0 : value / max * 100 + '%';
 
+    // TODO ignore JSHint warning. CSS will be used here.
     return (
       <div ref="timeline" style={{background: 'red', height: 10}} onMouseDown={this.handleMouseDown}>
         <div style={{background: 'green', width, height: 10, position: 'relative'}}>

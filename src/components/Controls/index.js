@@ -6,7 +6,7 @@ import Play from './Play';
 import Timeline from './Timeline';
 import Volume from './Volume';
 
-export default function Controls (props) {
+export default function Controls () {
   return (
     <div>
       <Play />
