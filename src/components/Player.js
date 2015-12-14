@@ -55,6 +55,13 @@ const Player = createClass({
     on(media, 'loadedmetadata', this.updateMediaState);
     on(media, 'playing', this.updateMediaState);
     on(media, 'pause', this.updateMediaState);
+    // on(this.refs.element, 'durationchange', setDuration.bind(this));
+    // on(this.refs.element, 'loadedmetadata', setMeta.bind(this));
+    // on(this.refs.element, 'pause', setPlaybackState.bind(this));
+    // on(this.refs.element, 'playing', setPlaybackState.bind(this));
+    // on(this.refs.element, 'progress', setDownloadProgress.bind(this));
+    // on(this.refs.element, 'timeupdate', setCurrentTime.bind(this));
+    // on(this.refs.element, 'volumechange', setVolume.bind(this));
   },
 
   componentWillUnmount() {
