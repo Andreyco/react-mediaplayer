@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDom from 'react-dom';
-import Player from './ui/Player';
+import Player from './components/index';
 
 const src = [
   {
