@@ -1,10 +1,12 @@
 import React, { createClass, PropTypes } from 'react';
 import { findDOMNode } from 'react-dom';
 import { on, off } from '../helpers/event';
+import { enterFullscreen, exitFullscreen } from '../helpers/fullscreen';
 import { readMetadata } from '../helpers/media';
 import Video from './Video';
 
 import PlaybackToggle from './PlaybackToggle';
+import FullscreenToggle from './FullscreenToggle';
 
 const Player = createClass({
   propTypes: {
@@ -27,7 +29,9 @@ const Player = createClass({
    */
   childContextTypes: {
     media: PropTypes.shape({
+      fullscreen: PropTypes.bool,
       playing: PropTypes.bool,
+      toggleFullscreen: PropTypes.func,
       togglePlayback: PropTypes.func,
     }),
   },
@@ -36,6 +40,7 @@ const Player = createClass({
     return {
       media: {
         ...this.state.media,
+        toggleFullscreen: this.toggleFullscreen,
         togglePlayback: this.togglePlayback,
       },
     };
@@ -44,8 +49,9 @@ const Player = createClass({
   getInitialState() {
     return {
       media: {
-        playing: false,
+        fullscreen: false,
         paused: true,
+        playing: false,
       },
     };
   },
@@ -55,10 +61,9 @@ const Player = createClass({
     on(media, 'loadedmetadata', this.updateMediaState);
     on(media, 'playing', this.updateMediaState);
     on(media, 'pause', this.updateMediaState);
+    on(document, `fullscreenchange MSFullscreenChange mozfullscreenchange webkitfullscreenchange`, this.fullscreenChanged);
+
     // on(this.refs.element, 'durationchange', setDuration.bind(this));
-    // on(this.refs.element, 'loadedmetadata', setMeta.bind(this));
-    // on(this.refs.element, 'pause', setPlaybackState.bind(this));
-    // on(this.refs.element, 'playing', setPlaybackState.bind(this));
     // on(this.refs.element, 'progress', setDownloadProgress.bind(this));
     // on(this.refs.element, 'timeupdate', setCurrentTime.bind(this));
     // on(this.refs.element, 'volumechange', setVolume.bind(this));
@@ -81,11 +86,22 @@ const Player = createClass({
     this.setState({ media });
   },
 
+  fullscreenChanged(event) {
+    this.updateMediaState(event)
+  },
+
   togglePlayback() {
     if (this.state.media.playing)
       this.media().pause();
     else
       this.media().play();
+  },
+
+  toggleFullscreen() {
+    if (this.state.media.fullscreen)
+      exitFullscreen();
+    else
+      enterFullscreen(this.media());
   },
 
   render() {
@@ -94,6 +110,7 @@ const Player = createClass({
       <div style={{background: '#ccc', width, height}}>
         <Video ref="media" {...{ width, height, src, controls, autoPlay }} />
         <PlaybackToggle />
+        <FullscreenToggle />
       </div>
     );
   }

@@ -1,6 +1,9 @@
+import { isFullscreen } from './fullscreen';
+
 export const readMetadata = (media) => ({
-  duration: media.duration,
   currentTime: media.currentTime,
-  playing: !media.paused,
+  duration: media.duration,
+  fullscreen: isFullscreen(media),
   paused: media.paused,
+  playing: !media.paused,
 });
