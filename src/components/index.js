@@ -7,6 +7,7 @@ import Video from './Video';
 
 import PlaybackToggle from './PlaybackToggle';
 import FullscreenToggle from './FullscreenToggle';
+import Timestamp from './Timestamp';
 
 const Player = createClass({
   propTypes: {
@@ -111,6 +112,7 @@ const Player = createClass({
         <Video ref="media" {...{ width, height, src, controls, autoPlay }} />
         <PlaybackToggle />
         <FullscreenToggle />
+        <Timestamp />
       </div>
     );
   }
