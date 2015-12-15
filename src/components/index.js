@@ -61,20 +61,21 @@ const Player = createClass({
 
   componentDidMount() {
     const media = findDOMNode(this.refs.media);
+    on(media, 'durationchange', this.updateMediaState);
     on(media, 'loadedmetadata', this.updateMediaState);
+    on(media, 'timeupdate', this.updateMediaState);
     on(media, 'playing', this.updateMediaState);
     on(media, 'pause', this.updateMediaState);
     on(document, `fullscreenchange MSFullscreenChange mozfullscreenchange webkitfullscreenchange`, this.updateMediaState);
-
-    // on(this.refs.element, 'durationchange', setDuration.bind(this));
     // on(this.refs.element, 'progress', setDownloadProgress.bind(this));
-    // on(this.refs.element, 'timeupdate', setCurrentTime.bind(this));
     // on(this.refs.element, 'volumechange', setVolume.bind(this));
   },
 
   componentWillUnmount() {
     const media = findDOMNode(this.refs.media);
+    off(media, 'durationchange', this.updateMediaState);
     off(media, 'loadedmetadata', this.updateMediaState);
+    off(media, 'timeupdate', this.updateMediaState);
     off(media, 'playing', this.updateMediaState);
     off(media, 'pause', this.updateMediaState);
   },
