@@ -50,6 +50,8 @@ const Player = createClass({
   getInitialState() {
     return {
       media: {
+        currentTime: 0,
+        duration: 0,
         fullscreen: false,
         paused: true,
         playing: false,
@@ -62,7 +64,7 @@ const Player = createClass({
     on(media, 'loadedmetadata', this.updateMediaState);
     on(media, 'playing', this.updateMediaState);
     on(media, 'pause', this.updateMediaState);
-    on(document, `fullscreenchange MSFullscreenChange mozfullscreenchange webkitfullscreenchange`, this.fullscreenChanged);
+    on(document, `fullscreenchange MSFullscreenChange mozfullscreenchange webkitfullscreenchange`, this.updateMediaState);
 
     // on(this.refs.element, 'durationchange', setDuration.bind(this));
     // on(this.refs.element, 'progress', setDownloadProgress.bind(this));
