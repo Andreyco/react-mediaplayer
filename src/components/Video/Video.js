@@ -3,6 +3,8 @@ import Source from './Source';
 
 const Video = createClass({
   propTypes: {
+    autoPlay: PropTypes.bool,
+    controls: PropTypes.bool,
     src: PropTypes.arrayOf(
       PropTypes.shape({
         src: PropTypes.string.isRequired,
@@ -17,10 +19,10 @@ const Video = createClass({
     const { src, width, height, controls, autoPlay } = this.props;
     return (
       <video {...{ width, height, controls, autoPlay }}>
-        { this.props.src.map((src, key) => <Source key={key} {...src} />) }
+        { src.map((props, key) => <Source key={key} {...props} />) }
       </video>
     );
-  }
+  },
 });
 
 export default Video;

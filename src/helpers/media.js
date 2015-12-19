@@ -22,4 +22,4 @@ export const readableTime = (seconds) => {
   if (time[0] === '00') time.shift();
 
   return time.join(':');
-}
+};

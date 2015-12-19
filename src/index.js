@@ -6,7 +6,7 @@ const src = [
   {
     src: 'http://www.w3schools.com/html/mov_bbb.mp4',
     type: 'video/mp4',
-  }
+  },
 ];
 
 const wrapper = document.getElementById('react-video-player');

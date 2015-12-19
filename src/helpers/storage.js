@@ -16,11 +16,11 @@ const createShim = () => {
   }
 
   return instance;
-}
+};
 
 // Having native support for LocalStorage? If so, use it. Otherwise use shim
 // with in-memory storage (bye bye persistence).
-const Storage = 'localStorage' in window && window.localStorage != null
+const Storage = 'localStorage' in window && window.localStorage !== null
   ? window.localStorage
   : createShim();
 

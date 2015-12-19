@@ -9,6 +9,6 @@ const Source = (
 Source.propTypes = {
   src: PropTypes.string.isRequired,
   type: PropTypes.string,
-}
+};
 
 export default Source;

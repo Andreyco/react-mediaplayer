@@ -11,6 +11,8 @@ import Timestamp from './Timestamp';
 
 const Player = createClass({
   propTypes: {
+    autoPlay: PropTypes.bool,
+    controls: PropTypes.bool,
     src: PropTypes.arrayOf(
       PropTypes.shape({
         src: PropTypes.string.isRequired,
@@ -85,27 +87,23 @@ const Player = createClass({
   },
 
   updateMediaState(event) {
-    const media = readMetadata(event.target)
+    const media = readMetadata(event.target);
     console.log(media);
     this.setState({ media });
   },
 
   fullscreenChanged(event) {
-    this.updateMediaState(event)
+    this.updateMediaState(event);
   },
 
   togglePlayback() {
-    if (this.state.media.playing)
-      this.media().pause();
-    else
-      this.media().play();
+    if (this.state.media.playing) this.media().pause();
+    else this.media().play();
   },
 
   toggleFullscreen() {
-    if (this.state.media.fullscreen)
-      exitFullscreen();
-    else
-      enterFullscreen(this.media());
+    if (this.state.media.fullscreen) exitFullscreen();
+    else enterFullscreen(this.media());
   },
 
   render() {
@@ -118,7 +116,7 @@ const Player = createClass({
         <Timestamp />
       </div>
     );
-  }
+  },
 });
 
 export default Player;
