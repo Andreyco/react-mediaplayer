@@ -4,8 +4,10 @@ export const readMetadata = (media) => ({
   currentTime: media.currentTime,
   duration: media.duration,
   fullscreen: isFullscreen(media),
+  muted: media.muted,
   paused: media.paused,
   playing: !media.paused,
+  volume: media.volume,
 });
 
 /**

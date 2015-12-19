@@ -8,6 +8,7 @@ import Video from './Video';
 import PlaybackToggle from './PlaybackToggle';
 import FullscreenToggle from './FullscreenToggle';
 import Timestamp from './Timestamp';
+import VolumeControl from './VolumeControl';
 
 const Player = createClass({
   propTypes: {
@@ -33,17 +34,25 @@ const Player = createClass({
   childContextTypes: {
     media: PropTypes.shape({
       fullscreen: PropTypes.bool,
+      muted: PropTypes.bool,
       playing: PropTypes.bool,
+      setVolume: PropTypes.func,
       toggleFullscreen: PropTypes.func,
+      toggleMute: PropTypes.func,
       togglePlayback: PropTypes.func,
+      volume: PropTypes.number,
     }),
   },
 
   getChildContext() {
     return {
       media: {
+        volume: 1,
+        muted: false,
         ...this.state.media,
+        setVolume: this.setVolume,
         toggleFullscreen: this.toggleFullscreen,
+        toggleMute: this.toggleMute,
         togglePlayback: this.togglePlayback,
       },
     };
@@ -65,18 +74,19 @@ const Player = createClass({
     const media = findDOMNode(this.refs.media);
     on(media, 'durationchange', this.updateMediaState);
     on(media, 'loadedmetadata', this.updateMediaState);
+    on(media, 'volumechange', this.updateMediaState);
     on(media, 'timeupdate', this.updateMediaState);
     on(media, 'playing', this.updateMediaState);
     on(media, 'pause', this.updateMediaState);
     on(document, `fullscreenchange MSFullscreenChange mozfullscreenchange webkitfullscreenchange`, this.updateMediaState);
     // on(this.refs.element, 'progress', setDownloadProgress.bind(this));
-    // on(this.refs.element, 'volumechange', setVolume.bind(this));
   },
 
   componentWillUnmount() {
     const media = findDOMNode(this.refs.media);
     off(media, 'durationchange', this.updateMediaState);
     off(media, 'loadedmetadata', this.updateMediaState);
+    off(media, 'volumechange', this.updateMediaState);
     off(media, 'timeupdate', this.updateMediaState);
     off(media, 'playing', this.updateMediaState);
     off(media, 'pause', this.updateMediaState);
@@ -106,6 +116,17 @@ const Player = createClass({
     else enterFullscreen(this.media());
   },
 
+  setVolume(level) {
+    const media = this.media();
+    media.volume = level;
+    media.muted = false;
+  },
+
+  toggleMute() {
+    if (this.state.media.muted) this.media().muted = false;
+    else this.media().muted = true;
+  },
+
   render() {
     const { width, height, src, autoPlay, controls } = this.props;
     return (
@@ -114,6 +135,7 @@ const Player = createClass({
         <PlaybackToggle />
         <FullscreenToggle />
         <Timestamp />
+        <VolumeControl />
       </div>
     );
   },
