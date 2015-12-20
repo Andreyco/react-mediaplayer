@@ -9,6 +9,7 @@ import PlaybackToggle from './PlaybackToggle';
 import FullscreenToggle from './FullscreenToggle';
 import Timestamp from './Timestamp';
 import VolumeControl from './VolumeControl';
+import ProgressControl from './ProgressControl';
 
 const Player = createClass({
   propTypes: {
@@ -33,6 +34,7 @@ const Player = createClass({
    */
   childContextTypes: {
     media: PropTypes.shape({
+      buffered: PropTypes.object,
       fullscreen: PropTypes.bool,
       muted: PropTypes.bool,
       playing: PropTypes.bool,
@@ -47,8 +49,8 @@ const Player = createClass({
   getChildContext() {
     return {
       media: {
-        volume: 1,
         muted: false,
+        volume: 1,
         ...this.state.media,
         setVolume: this.setVolume,
         toggleFullscreen: this.toggleFullscreen,
@@ -76,10 +78,10 @@ const Player = createClass({
     on(media, 'loadedmetadata', this.updateMediaState);
     on(media, 'volumechange', this.updateMediaState);
     on(media, 'timeupdate', this.updateMediaState);
+    on(media, 'progress', this.updateMediaState);
     on(media, 'playing', this.updateMediaState);
     on(media, 'pause', this.updateMediaState);
     on(document, `fullscreenchange MSFullscreenChange mozfullscreenchange webkitfullscreenchange`, this.updateMediaState);
-    // on(this.refs.element, 'progress', setDownloadProgress.bind(this));
   },
 
   componentWillUnmount() {
@@ -88,6 +90,7 @@ const Player = createClass({
     off(media, 'loadedmetadata', this.updateMediaState);
     off(media, 'volumechange', this.updateMediaState);
     off(media, 'timeupdate', this.updateMediaState);
+    off(media, 'progress', this.updateMediaState);
     off(media, 'playing', this.updateMediaState);
     off(media, 'pause', this.updateMediaState);
   },
@@ -130,12 +133,13 @@ const Player = createClass({
   render() {
     const { width, height, src, autoPlay, controls } = this.props;
     return (
-      <div style={{background: '#ccc', width, height}}>
+      <div style={{background: '#000', width, height}}>
         <Video ref="media" {...{ width, height, src, controls, autoPlay }} />
         <PlaybackToggle />
         <FullscreenToggle />
         <Timestamp />
         <VolumeControl />
+        <ProgressControl />
       </div>
     );
   },

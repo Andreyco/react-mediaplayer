@@ -1,6 +1,7 @@
 import { isFullscreen } from './fullscreen';
 
 export const readMetadata = (media) => ({
+  buffered: media.buffered,
   currentTime: media.currentTime,
   duration: media.duration,
   fullscreen: isFullscreen(media),
