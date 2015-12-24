@@ -1,8 +1,16 @@
 import React, { createClass, PropTypes } from 'react';
-import { handle as handleStyle, wrapper as wrapperStyle } from './styles';
+import { on, off } from '../../helpers/event';
+import {
+  wrapper as wrapperStyle,
+  track as trackStyle,
+  thumb as thumbStyle,
+  input as inputStyle,
+} from './styles';
+
+const DECREMENT = 37;
+const INCREMENT = 39;
 
 // TODO support value link
-
 const InputRange = createClass({
   propTypes: {
     min: PropTypes.number.isRequired,
@@ -27,20 +35,48 @@ const InputRange = createClass({
   },
 
   componentWillUnmount() {
-    this.stopRespondingToMouseActions();
+    this.onMouseUp();
   },
 
-  startRespondingToMouseActions() {
-    document.addEventListener('mousemove', this.move);
-    document.addEventListener('mouseup', this.commit);
+  onMouseDown(event) {
+    on(document, 'mousemove', this.onMouseMove);
+    on(document, 'mouseup', this.onMouseUp);
+    this.onMouseMove(event);
   },
 
-  stopRespondingToMouseActions() {
-    document.removeEventListener('mousemove', this.move);
-    document.removeEventListener('mouseup', this.commit);
+  onMouseUp() {
+    off(document, 'mousemove', this.onMouseMove);
+    off(document, 'mouseup', this.onMouseUp);
+    this.focusHiddenInput();
   },
 
-  computeValue(event, target) {
+  onMouseMove(event) {
+    this.state.value = this.valueFromMousePosition(event, this.refs.range);
+    this.props.onInput(this.state.value);
+  },
+
+  onKeyPress(event) {
+    let value = this.state.value;
+
+    if (event.which === INCREMENT) {
+      value = Math.min(this.props.max, value + this.props.step);
+    }
+
+    if (event.which === DECREMENT) {
+      value = Math.max(this.props.min, value - this.props.step);
+    }
+
+    if (value !== this.state.value) {
+      this.state.value = value;
+      this.commit();
+    }
+  },
+
+  focusHiddenInput() {
+    this.refs.hiddenInput.focus();
+  },
+
+  valueFromMousePosition(event, target) {
     const rect = target.getBoundingClientRect();
 
     let left = Math.min(rect.width, event.clientX - rect.left);
@@ -50,36 +86,26 @@ const InputRange = createClass({
     return Math.round(value / this.props.step) * this.props.step;
   },
 
-  move(event) {
-    this.state.value = this.computeValue(event, this.refs.range);
-    this.props.onInput(this.state.value);
-  },
-
-  jump(event) {
-    this.state.value = this.computeValue(event, event.target);
-    this.props.onChange(this.state.value);
-  },
-
   commit() {
     this.props.onChange(this.state.value);
-    this.stopRespondingToMouseActions();
+    this.onMouseUp();
   },
 
   render() {
     const value = Math.min(this.props.value, this.props.max);
 
     const props = {
-      onMouseDown: this.startRespondingToMouseActions,
-      onClick: event => event.stopPropagation(),
       style: {
-        ...handleStyle,
+        ...thumbStyle,
         left: (value / this.props.max) * 100 + '%',
       },
     };
 
     return (
-      <div style={wrapperStyle} ref="range" onClick={this.jump}>
-        <div ref="handle" {...props} />
+      <div style={wrapperStyle} onMouseDown={this.onMouseDown}>
+        <div style={trackStyle} ref="range" />
+        <div {...props} />
+        <input ref="hiddenInput" value={""} onKeyDown={this.onKeyPress} style={inputStyle} />
       </div>
     );
   },
