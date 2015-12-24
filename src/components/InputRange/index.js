@@ -4,8 +4,11 @@ import {
   wrapper as wrapperStyle,
   track as trackStyle,
   thumb as thumbStyle,
+  nativeInputStyle,
   input as inputStyle,
 } from './styles';
+
+import { decrement, increment, valueFromMousePosition } from './helpers';
 
 const DECREMENT = 37;
 const INCREMENT = 39;
@@ -48,27 +51,24 @@ const InputRange = createClass({
     off(document, 'mousemove', this.onMouseMove);
     off(document, 'mouseup', this.onMouseUp);
     this.focusHiddenInput();
+    this.triggerChange();
   },
 
   onMouseMove(event) {
-    this.state.value = this.valueFromMousePosition(event, this.refs.range);
-    this.props.onInput(this.state.value);
+    const value = valueFromMousePosition(event, this.refs.range, this.props);
+    this.triggerInput(value);
   },
 
   onKeyPress(event) {
     let value = this.state.value;
 
-    if (event.which === INCREMENT) {
-      value = Math.min(this.props.max, value + this.props.step);
-    }
+    if (event.which === INCREMENT) value = increment(value, this.props);
 
-    if (event.which === DECREMENT) {
-      value = Math.max(this.props.min, value - this.props.step);
-    }
+    if (event.which === DECREMENT) value = decrement(value, this.props);
 
     if (value !== this.state.value) {
-      this.state.value = value;
-      this.commit();
+      this.triggerInput(value);
+      this.triggerChange();
     }
   },
 
@@ -76,19 +76,13 @@ const InputRange = createClass({
     this.refs.hiddenInput.focus();
   },
 
-  valueFromMousePosition(event, target) {
-    const rect = target.getBoundingClientRect();
-
-    let left = Math.min(rect.width, event.clientX - rect.left);
-    left = Math.max(0, left);
-
-    const value = left / rect.width * this.props.max;
-    return Math.round(value / this.props.step) * this.props.step;
+  triggerInput(value) {
+    this.state.value = value;
+    this.props.onInput(value);
   },
 
-  commit() {
+  triggerChange() {
     this.props.onChange(this.state.value);
-    this.onMouseUp();
   },
 
   render() {
@@ -102,10 +96,12 @@ const InputRange = createClass({
     };
 
     return (
-      <div style={wrapperStyle} onMouseDown={this.onMouseDown}>
-        <div style={trackStyle} ref="range" />
-        <div {...props} />
-        <input ref="hiddenInput" value={""} onKeyDown={this.onKeyPress} style={inputStyle} />
+      <div style={nativeInputStyle}>
+        <div style={wrapperStyle} onMouseDown={this.onMouseDown}>
+          <div style={trackStyle} ref="range"/>
+          <div {...props} />
+          <input ref="hiddenInput" value={""} onKeyDown={this.onKeyPress} style={inputStyle} />
+        </div>
       </div>
     );
   },

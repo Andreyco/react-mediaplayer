@@ -6,54 +6,58 @@ const transform = (property) => ({
   transform: property,
 });
 
+const width = 129;
+const height = 15;
+
 /**
- * Main wrapper
+ * Native input style
  */
-const wrapper = {
-  height: 14,
-  // overflow: 'hidden',
-  position: 'relative',
-  cursor: 'pointer',
+export const nativeInputStyle = {
+  margin: 2,
+  display: 'inline-block',
+  width,
+  height,
   marginTop: 50,
 };
 
-export { wrapper };
+/**
+ * Main wrapper
+ */
+export const wrapper = {
+  position: 'relative',
+  height: '100%',
+};
 
 /**
  * Track
  */
-const track = {
-  ...transform('translateY(-50%)'),
+export const track = {
   position: 'absolute',
-  top: '50%',
+  top: (height - 5) / 2,
   width: '100%',
-  height: 4,
+  height: 5,
   display: 'block',
   background: '#ccc',
+  borderRadius: height / 2,
 };
-
-export { track };
 
 /**
  * Thumb
  */
-const thumb = {
-  width: 14,
-  height: 14,
-  position: 'relative',
-  top: 0,
+export const thumb = {
+  width: height,
+  height: height,
+  position: 'absolute',
   left: 0,
   ...transform('translateX(-50%)'),
   borderRadius: '50%',
   background: '#666',
 };
 
-export { thumb };
-
 /**
  * Inner input
  */
-const input = {
+export const input = {
   position: 'absolute',
   top: -10000,
   left: -10000,
@@ -62,5 +66,3 @@ const input = {
   padding: 0,
   border: 0,
 };
-
-export { input };
