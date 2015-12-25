@@ -1,7 +1,7 @@
 import React, { createClass, PropTypes } from 'react';
 import { findDOMNode } from 'react-dom';
 import { on, off } from '../../helpers/event';
-import { decrement, increment, valueFromMousePosition } from './helpers';
+import { getValue, getOnChangeHandler, decrement, increment, valueFromMousePosition } from './helpers';
 import Track from './Track';
 import {
   wrapper as wrapperStyle,
@@ -46,16 +46,10 @@ const InputRange = createClass({
 
   shouldComponentUpdate(nextProps) {
     const { min, max, step } = this.props;
-    return this.getValue(this.props) !== this.getValue(nextProps)
+    return getValue(this.props) !== getValue(nextProps)
       || nextProps.min !== min
       || nextProps.max !== max
       || nextProps.step !== step;
-  },
-
-  getValue(props) {
-    if (props.valueLink) return props.valueLink.value;
-
-    return props.value;
   },
 
   executeOnInput(value) {
@@ -64,11 +58,7 @@ const InputRange = createClass({
   },
 
   executeOnChange() {
-    if (this.props.valueLink) {
-      this.props.valueLink.requestChange(this.state.value);
-    } else {
-      this.props.onChange(this.state.value);
-    }
+    getOnChangeHandler(this.props)(this.state.value);
   },
 
   onMouseDown(event) {
@@ -108,7 +98,7 @@ const InputRange = createClass({
 
   render() {
     const { max } = this.props;
-    const value = Math.min(this.getValue(this.props), max);
+    const value = Math.min(getValue(this.props), max);
 
     const props = {
       style: {

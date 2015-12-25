@@ -42,3 +42,17 @@ export const decrement = (value, {min, step}) => {
   const newValue = toPrecision(value - step, precision(step));
   return Math.max(min, newValue);
 };
+
+/**
+ * Get `value` from given props.
+ */
+export const getValue = ({valueLink, value}) => {
+  return valueLink ? valueLink.value : value;
+};
+
+/**
+ * Get `onChange` from given props.
+ */
+export const getOnChangeHandler = ({valueLink, onChange}) => {
+  return valueLink ? valueLink.requestChange : onChange;
+};
