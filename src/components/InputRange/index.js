@@ -1,14 +1,14 @@
 import React, { createClass, PropTypes } from 'react';
+import { findDOMNode } from "react-dom";
 import { on, off } from '../../helpers/event';
+import { decrement, increment, valueFromMousePosition } from './helpers';
+import Track from './Track';
 import {
   wrapper as wrapperStyle,
-  track as trackStyle,
   thumb as thumbStyle,
   nativeInputStyle,
   input as inputStyle,
 } from './styles';
-
-import { decrement, increment, valueFromMousePosition } from './helpers';
 
 const DECREMENT = 37;
 const INCREMENT = 39;
@@ -55,7 +55,7 @@ const InputRange = createClass({
   },
 
   onMouseMove(event) {
-    const value = valueFromMousePosition(event, this.refs.range, this.props);
+    const value = valueFromMousePosition(event, findDOMNode(this.refs.track), this.props);
     this.triggerInput(value);
   },
 
@@ -86,19 +86,20 @@ const InputRange = createClass({
   },
 
   render() {
-    const value = Math.min(this.props.value, this.props.max);
+    const { max } = this.props;
+    const value = Math.min(this.props.value, max);
 
     const props = {
       style: {
         ...thumbStyle,
-        left: (value / this.props.max) * 100 + '%',
+        left: (value / max) * 100 + '%',
       },
     };
 
     return (
       <div style={nativeInputStyle}>
         <div style={wrapperStyle} onMouseDown={this.onMouseDown}>
-          <div style={trackStyle} ref="range"/>
+          <Track ref="track" max={max} value={value} />
           <div {...props} />
           <input ref="hiddenInput" value={""} onKeyDown={this.onKeyPress} style={inputStyle} />
         </div>

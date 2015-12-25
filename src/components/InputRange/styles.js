@@ -17,7 +17,6 @@ export const nativeInputStyle = {
   display: 'inline-block',
   width,
   height,
-  marginTop: 50,
 };
 
 /**
@@ -39,6 +38,7 @@ export const track = {
   display: 'block',
   background: '#ccc',
   borderRadius: height / 2,
+  overflow: 'hidden',
 };
 
 /**
@@ -52,6 +52,16 @@ export const thumb = {
   ...transform('translateX(-50%)'),
   borderRadius: '50%',
   background: '#666',
+};
+
+/**
+ * Fill
+ */
+export const fill = {
+  background: 'red',
+  height: '100%',
+  width: '50%',
+  position: 'relative',
 };
 
 /**
