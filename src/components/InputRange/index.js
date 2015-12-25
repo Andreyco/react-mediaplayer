@@ -13,14 +13,17 @@ import {
 const DECREMENT = 37;
 const INCREMENT = 39;
 
-// TODO support value link
 const InputRange = createClass({
   propTypes: {
     min: PropTypes.number.isRequired,
     max: PropTypes.number.isRequired,
     step: PropTypes.number.isRequired,
-    value: PropTypes.number.isRequired,
-    onChange: PropTypes.func.isRequired,
+    value: PropTypes.number,
+    valueLink: PropTypes.shape({
+      value: PropTypes.number.isRequired,
+      requestChange: PropTypes.func.isRequired,
+    }),
+    onChange: PropTypes.func,
     onInput: PropTypes.func,
   },
 
@@ -42,11 +45,30 @@ const InputRange = createClass({
   },
 
   shouldComponentUpdate(nextProps) {
-    const { min, max, step, value } = this.props;
-    return nextProps.value !== value
+    const { min, max, step } = this.props;
+    return this.getValue(this.props) !== this.getValue(nextProps)
       || nextProps.min !== min
       || nextProps.max !== max
       || nextProps.step !== step;
+  },
+
+  getValue(props) {
+    if (props.valueLink) return props.valueLink.value;
+
+    return props.value;
+  },
+
+  triggerInput(value) {
+    this.state.value = value;
+    this.props.onInput(value);
+  },
+
+  triggerChange() {
+    if (this.props.valueLink) {
+      this.props.valueLink.requestChange(this.state.value);
+    } else {
+      this.props.onChange(this.state.value);
+    }
   },
 
   onMouseDown(event) {
@@ -84,18 +106,9 @@ const InputRange = createClass({
     this.refs.hiddenInput.focus();
   },
 
-  triggerInput(value) {
-    this.state.value = value;
-    this.props.onInput(value);
-  },
-
-  triggerChange() {
-    this.props.onChange(this.state.value);
-  },
-
   render() {
     const { max } = this.props;
-    const value = Math.min(this.props.value, max);
+    const value = Math.min(this.getValue(this.props), max);
 
     const props = {
       style: {
