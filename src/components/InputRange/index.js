@@ -41,6 +41,14 @@ const InputRange = createClass({
     this.onMouseUp();
   },
 
+  shouldComponentUpdate(nextProps) {
+    const { min, max, step, value } = this.props;
+    return nextProps.value !== value
+      || nextProps.min !== min
+      || nextProps.max !== max
+      || nextProps.step !== step;
+  },
+
   onMouseDown(event) {
     on(document, 'mousemove', this.onMouseMove);
     on(document, 'mouseup', this.onMouseUp);
