@@ -58,12 +58,12 @@ const InputRange = createClass({
     return props.value;
   },
 
-  triggerInput(value) {
+  executeOnInput(value) {
     this.state.value = value;
     this.props.onInput(value);
   },
 
-  triggerChange() {
+  executeOnChange() {
     if (this.props.valueLink) {
       this.props.valueLink.requestChange(this.state.value);
     } else {
@@ -81,12 +81,12 @@ const InputRange = createClass({
     off(document, 'mousemove', this.onMouseMove);
     off(document, 'mouseup', this.onMouseUp);
     this.focusHiddenInput();
-    this.triggerChange();
+    this.executeOnChange();
   },
 
   onMouseMove(event) {
     const value = valueFromMousePosition(event, findDOMNode(this.refs.track), this.props);
-    this.triggerInput(value);
+    this.executeOnInput(value);
   },
 
   onKeyPress(event) {
@@ -97,8 +97,8 @@ const InputRange = createClass({
     if (event.which === DECREMENT) value = decrement(value, this.props);
 
     if (value !== this.state.value) {
-      this.triggerInput(value);
-      this.triggerChange();
+      this.executeOnInput(value);
+      this.executeOnChange();
     }
   },
 
