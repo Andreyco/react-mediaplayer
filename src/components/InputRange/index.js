@@ -1,5 +1,5 @@
 import React, { createClass, PropTypes } from 'react';
-import { findDOMNode } from "react-dom";
+import { findDOMNode } from 'react-dom';
 import { on, off } from '../../helpers/event';
 import { decrement, increment, valueFromMousePosition } from './helpers';
 import Track from './Track';
