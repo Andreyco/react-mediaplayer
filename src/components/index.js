@@ -101,8 +101,8 @@ const Player = createClass({
 
   updateMediaState(event) {
     const media = readMetadata(event.target);
-    console.log(media);
     this.setState({ media });
+    console.log(media);
   },
 
   fullscreenChanged(event) {

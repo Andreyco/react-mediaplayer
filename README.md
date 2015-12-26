@@ -9,6 +9,7 @@ Please, give me a time to deliver proper solution.
 * [ ] seek
 * [ ] playlist
 * [ ] progress
+* [x] volume controls
 * [ ] providers (youtube/vimeo)
 * [ ] Create subscriber to context!!!
 * [ ] Preserve settings (volume, ...) in storage (probably localStorage)

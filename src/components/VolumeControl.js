@@ -1,20 +1,24 @@
 import React, { PropTypes } from 'react';
+import InputRange from './InputRange';
 
 const VolumeControl = (
   {},
   { media }
 ) => {
+  const volumeLink = {
+    value: media.muted ? 0 : media.volume,
+    requestChange: value => media.setVolume(value),
+  };
+
   return (
     <div>
-      volume { media.volume }<br/>
-      <div onClick={media.toggleMute}>{ media.muted ? 'Unmute' : 'Mute'}</div>
-      <input
-        type="range"
+      <div onClick={media.toggleMute}>{ (media.muted || !media.volume) ? 'Unmute' : 'Mute'}</div>
+      <InputRange
         min={0}
         max={1}
         step={0.01}
-        value={media.muted ? 0 : media.volume}
-        onChange={(evt) => media.setVolume(parseFloat(evt.target.value))}
+        onInput={value => media.setVolume(value)}
+        valueLink={volumeLink}
       />
     </div>
   );
