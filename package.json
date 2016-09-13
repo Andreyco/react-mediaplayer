@@ -1,6 +1,6 @@
 {
-  "name": "react-video-player",
-  "version": "0.0.0",
+  "name": "react-mediaplayer",
+  "version": "0.1.0",
   "description": "",
   "scripts": {
     "clean": "rimraf dist",
